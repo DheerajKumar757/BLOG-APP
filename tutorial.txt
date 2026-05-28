@@ -1,0 +1,19 @@
+
+
+.navbar{
+  @apply z-10 sticky top-0 flex items-center gap-12 w-full px-[5vw] py-5 h-[80px] border-b bg-white;
+}
+What each class does
+z-10 gives the navbar a higher stacking order, so it appears above normal content.
+sticky top-0 makes it stick to the top when you scroll.
+flex arranges child elements in a row.
+items-center vertically centers items inside the navbar.
+gap-12 adds space between child items.
+w-full makes it full width.
+px-[5vw] adds horizontal padding based on viewport width.
+py-5 adds vertical padding.
+h-[80px] sets a fixed height of 80px.
+border-b adds a bottom border.
+bg-white gives it a white background.
+In simple terms
+This creates a sticky white header bar with spacing, alignment, and a bottom border. It is commonly used for navigation bars in websites.

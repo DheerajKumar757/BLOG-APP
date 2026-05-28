@@ -1,8 +1,9 @@
 import React from 'react'
+import NavbarComponent from './components/NavbarComponent'
 
 const App = () => {
   return (
-    <div class="text-3xl font-bold underline">App</div>
+    <NavbarComponent />
   )
 }
 
