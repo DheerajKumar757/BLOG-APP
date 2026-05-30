@@ -1,9 +1,42 @@
+
+https://www.youtube.com/watch?v=J7BGuuuvDDk&list=PLqm86YkewF6QbR7QwqYWcAbl70Zhv0JUE
+
+https://github.com/kunaal438/mern-blogging-website
+
+
 * {
   margin: 0;
   border: 1px dashed green;
 }
 
 border border-dashed border-green-500
+
+To start frontend :
+npm run dev
+
+To start server :
+npm start
+
+To start mongodb compass form terminal
+mongodb-compass
+
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+to initialize the server :
+npm init 
+
+npm i express cors dotenv jsonwebtoken
+
+
+-> REST Client VS Code extension
+REST Client
+Huachao Mao
+7,231,974
+
+
 
 #########################################################################
 #########################################################################
