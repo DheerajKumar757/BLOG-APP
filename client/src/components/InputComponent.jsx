@@ -11,6 +11,8 @@ const InputComponent = ({ name, type, id, value, placeholder}) => {
             id={id}
             className='input-box'
         />
+
+        <i className='fi fi-rr-user input-icon'></i>
     </div>
   )
 }

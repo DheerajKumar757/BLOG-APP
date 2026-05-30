@@ -55,6 +55,10 @@
     .input-box {
         @apply w-[100%] rounded-md p-4 bg-gray-100 pl-12 border border-gray-400 focus:bg-transparent placeholder:text-black;
     }
+
+    .input-icon{
+        @apply absolute left-4 top-1/2 -translate-y-1/2;
+    }
 }
 
 .ce-block__content, .ce-toolbar__content{

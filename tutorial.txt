@@ -11,6 +11,14 @@ border border-dashed border-green-500
 
 The class `max-w-[400px]` can be written as `max-w-100`(suggestCanonicalClasses)
 
+.input-icon {
+  @apply absolute left-4 top-1/2 -translate-y-1/2;
+}
+
+absolute places the icon out of normal document flow, so it can sit on top of the input area.
+left-4 moves it 1rem from the left side of the parent.
+top-1/2 puts the top edge at 50% of the parent’s height. -> icon top line match with input box middle
+-translate-y-1/2 shifts it up by half of its own height, which makes it vertically centered. -> icon middle match with input box middle
 
 
 #########################################################################
