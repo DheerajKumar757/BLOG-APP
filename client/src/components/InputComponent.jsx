@@ -1,6 +1,6 @@
 import React from 'react'
 
-const InputComponent = ({ name, type, id, value, placeholder}) => {
+const InputComponent = ({ name, type, id, value, placeholder, icon}) => {
   return (
     <div className='relative w-[100%] mb-4'>
         <input
@@ -12,7 +12,7 @@ const InputComponent = ({ name, type, id, value, placeholder}) => {
             className='input-box'
         />
 
-        <i className='fi fi-rr-user input-icon'></i>
+        <i className={"fi " + icon +  " input-icon"}></i>
     </div>
   )
 }

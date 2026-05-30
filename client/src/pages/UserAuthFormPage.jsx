@@ -11,9 +11,29 @@ const UserAuthFormPage = ({ type }) => {
 
             {
                 type != "signin" ?
-                    <InputComponent name="fullname" type="text" placeholder="full name" />
+                <InputComponent 
+                    name="fullname" 
+                    type="text" 
+                    placeholder="Full Name" 
+                    icon="fi-rr-user" 
+                />
                 : ""
             }
+
+            <InputComponent 
+                name="email" 
+                type="email" 
+                placeholder="Email" 
+                icon="fi-rr-envelope" 
+            />
+
+            <InputComponent 
+                name="password" 
+                type="password" 
+                placeholder="Password" 
+                icon="fi-rr-key" 
+            />
+                       
         </form>
 
     </section>
