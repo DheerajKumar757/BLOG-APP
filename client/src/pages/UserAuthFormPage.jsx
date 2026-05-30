@@ -2,70 +2,73 @@ import React from 'react'
 import InputComponent from '../components/InputComponent'
 import googleIcon from '../imgs/google.png'
 import { Link } from 'react-router-dom'
+import AnimationWrapper from '../common/page-animation'
 
 const UserAuthFormPage = ({ type }) => {
   return (
-    <section className='h-cover flex items-center justify-center'>
-        <form className='w-[80%] max-w-[400px]'>
-            <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
-                {type == "signin" ? "Welcome Back!" : "Join us today"}
-            </h1>
+    <AnimationWrapper>
+        <section className='h-cover flex items-center justify-center'>
+            <form className='w-[80%] max-w-[400px]'>
+                <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
+                    {type == "signin" ? "Welcome Back!" : "Join us today"}
+                </h1>
 
-            {
-                type != "signin" ?
+                {
+                    type != "signin" ?
+                    <InputComponent 
+                        name="fullname" 
+                        type="text" 
+                        placeholder="Full Name" 
+                        icon="fi-rr-user" 
+                    />
+                    : ""
+                }
+
                 <InputComponent 
-                    name="fullname" 
-                    type="text" 
-                    placeholder="Full Name" 
-                    icon="fi-rr-user" 
+                    name="email" 
+                    type="email" 
+                    placeholder="Email" 
+                    icon="fi-rr-envelope" 
                 />
-                : ""
-            }
 
-            <InputComponent 
-                name="email" 
-                type="email" 
-                placeholder="Email" 
-                icon="fi-rr-envelope" 
-            />
+                <InputComponent 
+                    name="password" 
+                    type="password" 
+                    placeholder="Password" 
+                    icon="fi-rr-key" 
+                />
 
-            <InputComponent 
-                name="password" 
-                type="password" 
-                placeholder="Password" 
-                icon="fi-rr-key" 
-            />
+                <buton
+                    className="btn-dark center mt-14 w-fit"
+                    type="submit"
+                >
+                    {type == "signin" ? "Sign In" : "Sign Up"}
+                </buton>      
 
-            <buton
-                className="btn-dark center mt-14 w-fit"
-                type="submit"
-            >
-                {type == "signin" ? "Sign In" : "Sign Up"}
-            </buton>      
+                <div className='relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold'>
+                    <hr className='w-1/2 border-back'/>
+                    <p>or</p>
+                    <hr className='w-1/2 border-back'/>    
+                </div>  
 
-            <div className='relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold'>
-                <hr className='w-1/2 border-back'/>
-                <p>or</p>
-                <hr className='w-1/2 border-back'/>    
-            </div>  
+                <button className="btn-dark flex gap-4 items-center justify-center center w-[90%]">
+                    <img className="w-5 h-5" src={googleIcon} alt="Google Icon" />    
+                    continue with google
+                </button>  
 
-            <button className="btn-dark flex gap-4 items-center justify-center center w-[90%]">
-                <img className="w-5 h-5" src={googleIcon} alt="Google Icon" />    
-                continue with google
-            </button>  
-
-            {
-                type == "signin" ?
-                <p className='mt-6 text-gray-600 text-xl text-center'>
-                    Don't have an account ? <Link to="/signup" className='underline text-black text-xl ml-1'>Join us today.</Link>
-                </p>
-                :
-                <p className='mt-6 text-gray-600 text-xl text-center'>
-                    Alreday a member ? <Link to="/signin" className='underline text-black text-xl ml-1'>Sign in here.</Link>
-                </p>
-            }  
-        </form>
-    </section>
+                {
+                    type == "signin" ?
+                    <p className='mt-6 text-gray-600 text-xl text-center'>
+                        Don't have an account ? <Link to="/signup" className='underline text-black text-xl ml-1'>Join us today.</Link>
+                    </p>
+                    :
+                    <p className='mt-6 text-gray-600 text-xl text-center'>
+                        Alreday a member ? <Link to="/signin" className='underline text-black text-xl ml-1'>Sign in here.</Link>
+                    </p>
+                }  
+            </form>
+        </section>
+    </AnimationWrapper>
   )
 }
 
