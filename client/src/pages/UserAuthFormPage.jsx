@@ -33,7 +33,7 @@ const UserAuthFormPage = ({ type }) => {
                 placeholder="Password" 
                 icon="fi-rr-key" 
             />
-                       
+
         </form>
 
     </section>
