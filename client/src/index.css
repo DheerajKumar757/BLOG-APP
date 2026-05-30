@@ -44,6 +44,10 @@
         @apply min-h-[calc(100vh-80px)];
     }
 
+    .center {
+        @apply block mx-auto;
+    }
+
     .link{
         @apply text-gray-900 hover:text-black hover:bg-gray-200 p-3 px-4 block opacity-75;
     }
