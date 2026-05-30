@@ -17,3 +17,27 @@ border-b adds a bottom border.
 bg-white gives it a white background.
 In simple terms
 This creates a sticky white header bar with spacing, alignment, and a bottom border. It is commonly used for navigation bars in websites.
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+
+Routes from react-router-dom can be used to create multiple route inside react.
+-> these are three independent routes therefore signin and signup will not contain navbar
+    <Routes>
+      <Route path ="/" element={<NavbarComponent />} />
+      <Route path = "/signin" element={<h1>Sign In Page</h1>} />
+      <Route path = "/signup" element={<h1>Sign Up Page</h1>} />
+    </Routes>
+
+-> here root is working as a parent so signin and signup will also have navbar
+-> this is a example of nested routes
+-> but there is a problem in rendering
+-> to render such nested routes we need `outlet`
+    <Route path ="/" element={<NavbarComponent />} >
+      <Route path = "/signin" element={<h1>Sign In Page</h1>} />
+      <Route path = "/signup" element={<h1>Sign Up Page</h1>} />      
+    </Route>
+
+
