@@ -16,6 +16,7 @@ npm run dev
 
 To start server :
 npm start
+npm run dev
 
 To start mongodb compass form terminal
 mongodb-compass
@@ -36,7 +37,44 @@ REST Client
 Huachao Mao
 7,231,974
 
+Install nodemon as a dev dependency :
+npm install --save-dev nodemon
 
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+server.post("/signup", (req, res) => {
+    let { fullname, email, password } = req.body;
+
+    // validation of data from frontend
+
+    // Hash the password before saving it to the database
+    bcrypt.hash(password, 10, (err, hashed_password) => {
+        let username = email.split("@")[0];
+
+        let user = new User({
+            personal_info: {fullname, email, password:hashed_password, username}
+        });
+
+        user.save().then((u) => {
+            return res.status(200).json({ user: u});
+        }).catch(err => {
+            return res.status(500).json({"error":err.message});
+        });
+    })
+
+    return res.status(200).json({ "status":"okay"});
+})
+
+above will give error if there is request for signup
+since `await` is not used so 
+`res.status(200).json({ "status":"okay"})` 
+response will be sent immediately so 
+`res.status(200).json({ user: u})`
+cannot be sent again leading error from catch 
+`res.status(500).json({"error":err.message})`
 
 #########################################################################
 #########################################################################
