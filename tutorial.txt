@@ -40,6 +40,35 @@ Huachao Mao
 Install nodemon as a dev dependency :
 npm install --save-dev nodemon
 
+#########################################################################
+#########################################################################
+#########################################################################
+
+mongoose DB error if someone tries to signup with duplicate email
+{"error":"E11000 duplicate key error collection: mern_blog_db.users index: personal_info.email_1 dup key: { personal_info.email: \"dhee@gmail.com\" }"}
+
+
+Generate sceret key from node terminal:
+to open node terminal : node
+to generate key : require('crypto').randomBytes(64).toString('hex')
+
+
+const token = jwt.sign(
+  { userId: 123, role: 'admin' },
+  'mySecret',
+  { expiresIn: '1h' }
+);
+
+the payload is { userId: 123, role: 'admin' },
+the secret is 'mySecret',
+the token expires in 1 hour.
+
+Why it matters
+The signature does not hide the data; 
+it only protects it from tampering. 
+Anyone can decode the payload, 
+but only someone with the secret/private key 
+can create a valid signature.
 
 #########################################################################
 #########################################################################

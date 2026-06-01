@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import bcrypt from 'bcrypt';
+import { nanoid } from 'nanoid';
+import jwt from 'jsonwebtoken';
 
 // Import Schema
 import User from './Schema/User.js';
@@ -19,6 +21,29 @@ let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for pass
 mongoose.connect(process.env.DB_LOCATION, {
     autoIndex: true
 })
+
+const formatDatatoSend = (user) => {
+
+    const access_token = jwt.sign({id: user._id}, process.env.JWT_SECRET_ACCESS_KEY, {expiresIn: "1d"});
+
+    return {
+        access_token,
+        profile_img: user.personal_info.profile_img,
+        fullname: user.personal_info.fullname,
+        username: user.personal_info.username,
+    }
+}
+
+const generateUsername = async (email) => {
+    let username = email.split("@")[0];
+    
+    // Check if the username already exists in the database
+    let isUsernameNotUnique = await User.exists({ "personal_info.username": username }).then((result) => result);
+
+    isUsernameNotUnique ? username += nanoid().substring(0, 5) : "";
+
+    return username;
+}
 
 server.post("/signup", (req, res) => {
     let { fullname, email, password } = req.body;
@@ -45,16 +70,19 @@ server.post("/signup", (req, res) => {
     }
 
     // Hash the password before saving it to the database
-    bcrypt.hash(password, 10, (err, hashed_password) => {
-        let username = email.split("@")[0];
+    bcrypt.hash(password, 10, async (err, hashed_password) => {
+        let username = await generateUsername(email);
 
         let user = new User({
             personal_info: {fullname, email, password:hashed_password, username}
         });
 
         user.save().then((u) => {
-            return res.status(200).json({ user: u});
+            return res.status(200).json(formatDatatoSend(u));
         }).catch(err => {
+            if(err.code === 11000) {
+                return res.status(500).json({"error": "Email already exists"})
+            }
             return res.status(500).json({"error":err.message});
         });
     })
