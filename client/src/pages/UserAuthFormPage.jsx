@@ -3,12 +3,57 @@ import InputComponent from '../components/InputComponent'
 import googleIcon from '../imgs/google.png'
 import { Link } from 'react-router-dom'
 import AnimationWrapper from '../common/page-animation'
+import { useRef } from 'react'
 
 const UserAuthFormPage = ({ type }) => {
+
+    const authForm = useRef();
+
+    const handleSubmit = (e) => {
+
+        e.preventDefault();
+
+        let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
+        let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
+
+        // form data
+        let form = new FormData(authForm.current);
+        let formData = {};
+
+        // key wil be the name of the input field and value will be the value entered by the user
+        for(let [key, value] of form.entries()) {
+            formData[key] = value;
+        }
+
+        // destructuring form data
+        let { fullname, email, password } = formData;
+
+        if (fullname && fullname.length < 3) {
+            return console.log({ "error":"Fullname should be at least 3 letters long" });
+        }
+
+        if(!email.length) {
+            return console.log({ "error":"Email is required" });
+        }
+
+        if(!emailRegex.test(email)) {
+            return console.log({ "error":"Email is invalid" });
+        }
+
+        if(!password.length) {
+            return console.log({ "error":"Password is required" });
+        }
+
+        if(!passwordRegex.test(password)) {
+            return console.log({ "error":"Password should be between 6 to 20 characters and should contain at least one numeric digit, one uppercase and one lowercase letter" });
+        }
+        console.log(formData)
+    }
+
   return (
     <AnimationWrapper keyValue={type}>
         <section className='h-cover flex items-center justify-center'>
-            <form className='w-[80%] max-w-[400px]'>
+            <form ref={authForm} className='w-[80%] max-w-[400px]'>
                 <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
                     {type == "signin" ? "Welcome Back!" : "Join us today"}
                 </h1>
@@ -41,6 +86,7 @@ const UserAuthFormPage = ({ type }) => {
                 <button
                     className="btn-dark center mt-14"
                     type="submit"
+                    onClick={handleSubmit}
                 >
                     {type == "signin" ? "Sign In" : "Sign Up"}
                 </button>      
