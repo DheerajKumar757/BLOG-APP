@@ -3,7 +3,7 @@ import googleIcon from '../imgs/google.png'
 import { Link, Navigate } from 'react-router-dom'
 import AnimationWrapper from '../common/page-animation'
 import { useRef, useContext } from 'react'
-import { Toaster, toast } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 import axios from 'axios'
 import { storeInSession } from '../common/session'
 import { UserContext } from '../App'
@@ -80,8 +80,7 @@ const UserAuthFormPage = ({ type }) => {
     :
     <AnimationWrapper keyValue={type}>
         <section className='h-cover flex items-center justify-center'>
-            <Toaster />
-            <form ref={authForm} className='w-[80%] max-w-[400px]'>
+            <form ref={authForm} autoComplete='off' className='w-[80%] max-w-[400px]'>
                 <h1 className='text-4xl font-gelasio capitalize text-center mb-24'>
                     {type == "signin" ? "Welcome Back!" : "Join us today"}
                 </h1>

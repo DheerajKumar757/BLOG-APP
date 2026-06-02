@@ -4,6 +4,7 @@ import UserAuthFormPage from './pages/UserAuthFormPage'
 import { createContext } from 'react'
 import { useState, useEffect } from 'react'
 import { lookInSession } from './common/session'
+import { Toaster } from 'react-hot-toast'
 
 export const UserContext = createContext({});
 
@@ -18,6 +19,7 @@ const App = () => {
 
   return (
     <UserContext.Provider value={{userAuth, setUserAuth}}>
+      <Toaster />
       <Routes>
         <Route path ="/" element={<NavbarComponent />} >
           <Route path = "/signin" element={<UserAuthFormPage type="signin" />} />
