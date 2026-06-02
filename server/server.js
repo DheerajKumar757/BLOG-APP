@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
 import jwt from 'jsonwebtoken';
+import cors from 'cors';
 
 // Import Schema
 import User from './Schema/User.js';
@@ -13,6 +14,7 @@ dotenv.config();
 const server = express();
 
 server.use(express.json());
+server.use(cors())
 let PORT = 3000;
 
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
@@ -45,7 +47,7 @@ const generateUsername = async (email) => {
     return username;
 }
 
-server.post("/signup", (req, res) => {
+server.post("/signup", async (req, res) => {
     let { fullname, email, password } = req.body;
 
     // validation of data from frontend
@@ -77,12 +79,14 @@ server.post("/signup", (req, res) => {
             personal_info: {fullname, email, password:hashed_password, username}
         });
 
-        user.save().then((u) => {
+        let existingUser = await User.findOne({ "personal_info.email": email });
+        if (existingUser) {
+            return res.status(403).json({ "error": "Email already exists" });
+        }
+
+        await user.save().then((u) => {
             return res.status(200).json(formatDatatoSend(u));
         }).catch(err => {
-            if(err.code === 11000) {
-                return res.status(500).json({"error": "Email already exists"})
-            }
             return res.status(500).json({"error":err.message});
         });
     })
