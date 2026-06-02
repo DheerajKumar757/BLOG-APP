@@ -2,6 +2,7 @@ import {Link, Outlet} from 'react-router-dom'
 import logo from '../imgs/logo.png'
 import { useState, useContext } from 'react'
 import { UserContext } from '../App'
+import UserNavigationPanel from './UserNavigationPanel'
 
 
 
@@ -54,6 +55,8 @@ const NavbarComponent = () => {
                 <button className='w-12 h-12 mt-1'>
                   <img src={profile_img} alt="Profile" className='w-full h-full object-cover rounded-full'/>
                 </button>
+
+                <UserNavigationPanel />
               </div>
             </>
             :
