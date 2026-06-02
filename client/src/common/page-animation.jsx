@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const AnimationWrapper = ({ 
     children, 
@@ -10,7 +10,6 @@ const AnimationWrapper = ({
 
 }) => {
     return (
-        <AnimatePresence>
             <motion.div
                 key={keyValue}
                 initial={initial}
@@ -20,7 +19,6 @@ const AnimationWrapper = ({
             >
                 { children }
             </motion.div>
-        </AnimatePresence>
     )
 }
 

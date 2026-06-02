@@ -110,7 +110,7 @@ server.post("/signin", (req, res) => {
                 return res.status(403).json({ "error" : "Invalid password" });
             }
             else {
-                return res.status(200).json(user);
+                return res.status(200).json(formatDatatoSend(user));
             }
         })
 
