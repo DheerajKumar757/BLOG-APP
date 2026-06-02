@@ -44,6 +44,18 @@ npm install --save-dev nodemon
 #########################################################################
 #########################################################################
 
+Inside UserContext whatever element will be, only those will be allowed to 
+access the states. Since our whole routes are inside the UserContext so it
+can be accessed from anywhere.
+
+<UserContext.Provider value={{userAuth, setUserAuth}}>
+First `{}` let us write the javascript
+Second `{}` denotes the javascript object as a value
+
+#########################################################################
+#########################################################################
+#########################################################################
+
 mongoose DB error if someone tries to signup with duplicate email
 {"error":"E11000 duplicate key error collection: mern_blog_db.users index: personal_info.email_1 dup key: { personal_info.email: \"dhee@gmail.com\" }"}
 
