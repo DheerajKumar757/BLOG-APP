@@ -2,10 +2,16 @@ import { Link } from "react-router-dom"
 import AnimationWrapper from "../common/page-animation"
 import { useContext } from "react"
 import { UserContext } from "../App";
+import { removeFromSession } from "../common/session";
 
 const UserNavigationPanel = () => {
 
-    const {userAuth: {username}} = useContext(UserContext);
+    const {userAuth: {username}, setUserAuth} = useContext(UserContext);
+
+    const signOutUser = () => {
+        removeFromSession("user");
+        setUserAuth({ access_token: null });
+    }
 
     return (
         <AnimationWrapper 
@@ -13,7 +19,7 @@ const UserNavigationPanel = () => {
         transition={{ duration: 0.2 }}
         >
 
-            <div className=" bg-white relative right-0 border border-gray-300 w-60 overflow-hiddend duration-200">
+            <div className=" bg-white relative right-0 border border-gray-300 w-60 duration-200">
                 <Link to="/editor" className="flex gap-2 link md:hidden pl-8 py-4 border border-gray-100">
                     <i className="fi fi-rr-file-edit"></i>
                     <p>Write</p>
@@ -29,7 +35,17 @@ const UserNavigationPanel = () => {
 
                 <Link to="/setings/edit-profile" className="link pl-8 py-4 border border-gray-100">
                     Settings
-                </Link>                                             
+                </Link>    
+
+                <span className="absolute border-t border-gray-200 w-[100%]"></span>    
+
+                <button 
+                    className="text-left p-4 hover:bg-gray-100 w-full pl-8 py-4"
+                    onClick={signOutUser}
+                >
+                    <h1 className="font-bold text-xl mg-1">Sign Out</h1>
+                    <p className="text-gray-900">@{username}</p>
+                </button>                                     
             </div>
 
         </AnimationWrapper>
