@@ -21,6 +21,9 @@ npm run dev
 To start mongodb compass form terminal
 mongodb-compass
 
+MileStones :
+C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and backend.
+
 
 #########################################################################
 #########################################################################
@@ -39,6 +42,53 @@ Huachao Mao
 
 Install nodemon as a dev dependency :
 npm install --save-dev nodemon
+
+
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+How firebase google auth service works :
+When a user clicks on `Continue with Google` button, Google auth window is
+opened where user verifies his/her account. Once the mail is verfied from 
+goole it gives user basic details to frontend with access key.
+Now before login directly to our website, we will share the access key to 
+our backend for verification if it is correct or not.
+
+Go to firebase
+Got to console
+Enter Project Name, APP Name,
+Create a Authentication project,
+Get the code something like this 
+
+// code from google auth :
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "",
+  authDomain: "standard-mern-blog.firebaseapp.com",
+  projectId: "standard-mern-blog",
+  storageBucket: "standard-mern-blog.firebasestorage.app",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: ""
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+value of `apiKey`, `messagingSenderId`, `appId` and `measurementId` has been removed from here for security.
+
 
 #########################################################################
 #########################################################################
