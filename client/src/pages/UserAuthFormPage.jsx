@@ -15,8 +15,6 @@ const UserAuthFormPage = ({ type }) => {
 
     let { userAuth: { access_token }, setUserAuth } = useContext(UserContext);
 
-    console.log(access_token)
-
     const userAuthThroughServer = (ServerRouter, formData) => {
         
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + ServerRouter, formData)
@@ -79,7 +77,14 @@ const UserAuthFormPage = ({ type }) => {
         e.preventDefault();
         authWithGoogle()
         .then(user => {
-            console.log(user);
+            // console.log(user);
+
+            let serverRoute = "/google-auth"
+            let formData = {
+                access_token: user.accessToken
+            }
+
+            userAuthThroughServer(serverRoute, formData);
         })
         .catch(err => {
             toast.error("Google authentication failed");

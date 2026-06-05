@@ -44,6 +44,29 @@ Install nodemon as a dev dependency :
 npm install --save-dev nodemon
 
 
+#########################################################################
+#########################################################################
+#########################################################################
+
+in firebase go to your project -> settings -> Service Accounts -> Generate new private key
+json file will be downloaded with following details 
+This details will be used in server to verify the google token which we got from frontend
+
+{
+  "type": "service_account",
+  "project_id": "standard-mern-blog",
+  "private_key_id": "",
+  "private_key": "",
+  "client_email": "firebase-adminsdk-fbsvc@standard-mern-blog.iam.gserviceaccount.com",
+  "client_id": "",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "",
+  "universe_domain": "googleapis.com"
+}
+
+
 
 #########################################################################
 #########################################################################

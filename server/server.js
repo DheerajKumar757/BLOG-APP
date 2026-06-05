@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
+import admin from 'firebase-admin';
+import { getAuth } from 'firebase-admin/auth';
 
 // Import Schema
 import User from './Schema/User.js';
@@ -16,6 +18,22 @@ const server = express();
 server.use(express.json());
 server.use(cors())
 let PORT = 3000;
+
+admin.initializeApp({
+    credential: admin.credential.cert({
+        "type": "service_account",
+        "project_id": "standard-mern-blog",
+        "private_key_id": process.env.GOOGLE_AUTH_PRIVATE_KEY_ID,
+        "private_key": process.env.GOOGLE_AUTH_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        "client_email": "firebase-adminsdk-fbsvc@standard-mern-blog.iam.gserviceaccount.com",
+        "client_id": process.env.GOOGLE_AUTH_CLIENT_ID,
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": process.env.GOOGLE_AUTH_CLIENT_X509_CERT_URL,
+        "universe_domain": "googleapis.com"
+    })
+})
 
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
@@ -101,6 +119,9 @@ server.post("/signin", (req, res) => {
         if(!user) {
             return res.status(403).json({"error": "Email not found"});
         }
+        else if(user.google_auth) {
+            return res.status(403).json({"error": "Please use google to sign in."});
+        }
 
         bcrypt.compare(password, user.personal_info.password, (err, match) => {
             if(err) {
@@ -120,6 +141,58 @@ server.post("/signin", (req, res) => {
         return res.status(500).json({ "error": err.message });
     })
 
+})
+
+server.post("/google-auth", (req, res) => {
+    let { access_token } = req.body;
+
+    console.log("acc_tok=" + access_token);
+    
+    getAuth()
+    .verifyIdToken(access_token)
+    .then(async (decodedUser) => {
+        let { name, email, picture } = decodedUser;
+        picture = picture.replace("s96-c", "s384-c");
+
+        let user = await User.findOne({"personal_info.email":email}).select("personal_info.fullname personal_info.username personal_info.profile_img google_auth")
+        .then((u) => {return u || null})
+        .catch((err) => {
+            return res.status(500).json({"error":err.message})
+        })
+
+        if(user) {
+            if(!user.google_auth){
+                return res.status(403).json({"error": "Email was signed up without google. Please login with password."})
+            }
+        }
+        else {
+            let username = await generateUsername(email);
+
+            user = new User({
+                personal_info: { fullname: name, email, profile_img: picture, username },
+                google_auth: true
+            })
+
+            // to use default profile image :
+            // user = new User({
+            //     personal_info: { fullname: name, email, username },
+            //     google_auth: true
+            // })
+
+            await user.save().then((u) => {
+                user = u;
+            })
+            .catch(err => {
+                return res.status(500).json({"error": err.message})
+            })
+        }
+
+        return res.status(200).json(formatDatatoSend(user));
+        
+    })
+    .catch((err) => {
+        return res.status(500).json({"error":"Failed to login user Google, use other account!"})
+    })
 })
 
 server.listen(PORT, () => {
