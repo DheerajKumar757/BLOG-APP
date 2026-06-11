@@ -24,6 +24,21 @@ const userSchema = mongoose.Schema({
             minlength: [3, 'Username must be 3 letters long'],
             unique: true,
         },
+        lastLogin: {
+            type: Date,
+            default: Date.now
+        },
+        isVerified: {
+            type: Boolean,
+            default: false
+        },        
+        resetToken: String,
+        resetTokenParams: {
+            type: String,
+            unique: true,
+            sparse: true,
+        },
+        resetTokenExpiresAt: Date,
         bio: {
             type: String,
             maxlength: [200, 'Bio should not be more than 200'],

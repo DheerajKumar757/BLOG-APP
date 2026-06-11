@@ -6,10 +6,12 @@ import { nanoid } from 'nanoid';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import admin from 'firebase-admin';
+import crypto from "crypto"
 import { getAuth } from 'firebase-admin/auth';
 
 // Import Schema
 import User from './Schema/User.js';
+import { sendEmailVerificationSuccessMail, sendVerificationEmail } from './nodemailer/email.js';
 
 dotenv.config();
 
@@ -51,6 +53,8 @@ const formatDatatoSend = (user) => {
         profile_img: user.personal_info.profile_img,
         fullname: user.personal_info.fullname,
         username: user.personal_info.username,
+        is_verified: user.personal_info.isVerified,
+        reset_params_token: user.personal_info.resetTokenParams,
     }
 }
 
@@ -93,14 +97,27 @@ server.post("/signup", async (req, res) => {
     bcrypt.hash(password, 10, async (err, hashed_password) => {
         let username = await generateUsername(email);
 
-        let user = new User({
-            personal_info: {fullname, email, password:hashed_password, username}
-        });
-
         let existingUser = await User.findOne({ "personal_info.email": email });
         if (existingUser) {
             return res.status(403).json({ "error": "Email already exists" });
         }
+
+        const verificationToken = Math.floor(100000 + Math.random() * 900000).toString();
+        const verificationParams = crypto.randomBytes(20).toString("hex");
+
+        sendVerificationEmail(email, fullname, verificationToken, `${process.env.CLIENT_URL}/verify-email/${verificationParams}`);
+
+        let user = new User({
+            personal_info: {
+                fullname,
+                email,
+                password:hashed_password,
+                username,
+                resetToken: verificationToken,
+                resetTokenParams: verificationParams,
+                resetTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
+            }
+        });
 
         await user.save().then((u) => {
             return res.status(200).json(formatDatatoSend(u));
@@ -108,6 +125,50 @@ server.post("/signup", async (req, res) => {
             return res.status(500).json({"error":err.message});
         });
     })
+})
+
+server.post("/verify-email/:token_param", async (req, res) => {
+    const { token_param } = req.params;
+    const { token_verify } = req.body;
+
+    User.findOne({
+        "personal_info.resetTokenParams" : token_param
+    })
+    .then(async (user) => {
+        if(!user) {
+            return res.status(500).json({"error":"No verifcation pending."});
+        }
+        if(user.personal_info.resetTokenExpiresAt < Date.now()) {
+            // if token has expired use forgot password
+            user.personal_info.resetToken = undefined;
+            user.personal_info.resetTokenParams = undefined;
+            user.personal_info.resetTokenExpiresAt = undefined;
+
+            await user.save();
+
+            return res.status(500).json({"error":"Token has expired."});
+        }
+        if(user.personal_info.resetToken == token_verify) {
+            user.personal_info.isVerified = true;
+            user.personal_info.resetToken = undefined;
+            user.personal_info.resetTokenParams = undefined;
+            user.personal_info.resetTokenExpiresAt = undefined;
+
+            await user.save();
+
+            sendEmailVerificationSuccessMail(user.personal_info.email, user.personal_info.username, `${process.env.CLIENT_URL}/signin`);
+
+            return res.status(200).json(formatDatatoSend(user));
+
+        }
+        else {
+            return res.status(500).json({"error":"Invalid token."});
+        }
+    })
+    .catch(err => {
+        return res.status(500).json({"error":err.message});
+    })
+
 })
 
 server.post("/signin", (req, res) => {

@@ -43,6 +43,54 @@ Huachao Mao
 Install nodemon as a dev dependency :
 npm install --save-dev nodemon
 
+#########################################################################
+#########################################################################
+#########################################################################
+
+resetTokenParams: {
+  type: String,
+  unique: true,
+  sparse: true,
+}
+
+unique: true → no two indexed values can be the same.
+
+sparse: true → documents that don’t have resetTokenParams are ignored by that index.
+
+
+Why it helps
+Without sparse: true, MongoDB can treat multiple missing or null values as duplicates 
+in a unique index, which can cause E11000 duplicate key errors. With sparse: true, 
+documents that don’t have that field are not part of the unique index, 
+so they won’t conflict with each other.
+
+Important detail
+A sparse index skips documents where the field is missing, 
+but if the field exists and is explicitly set to null, 
+that can still be indexed depending on how the document is stored. 
+So the safest approach is often to leave the field undefined 
+until you actually have a token value, rather than storing null.
+
+In plain words
+Use sparse: true when the field is optional, but should be unique only when it exists.
+
+
+If error has already occured :
+E11000 duplicate key error collection: mern_blog_db.users index: personal_info.resetTokenParams_1 dup key: { personal_info.resetTokenParams: null }
+
+But you'll also need to drop the existing index in the database 
+since the broken unique index is already created. 
+You can do this via:
+
+mongosh
+use mern_blog_db
+db.users.dropIndex("personal_info.resetTokenParams_1")
+
+Or via a Mongoose sync on restart after changing the schema.
+
+
+
+
 
 #########################################################################
 #########################################################################

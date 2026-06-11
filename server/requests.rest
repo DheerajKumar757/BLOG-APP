@@ -1,8 +1,6 @@
-POST http://localhost:3000/signup
+POST http://localhost:3000/verify-email/160b9a95f3e968717d108b919f79ac910b700130
 Content-Type: application/json
 
 {
-    "fullname": "John Doe",
-    "email": "john.doe@example.com",
-    "password": "password123"
+    "token_verify" : "232874"
 }
