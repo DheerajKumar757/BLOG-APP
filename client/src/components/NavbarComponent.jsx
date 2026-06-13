@@ -11,7 +11,7 @@ const NavbarComponent = () => {
   const [searchBoxVisibility, setSearchBoxVisibility] = useState(false)
   const [ userNavPanel, setUserNavPanel ] = useState(false);
 
-  const { userAuth, userAuth: { access_token, profile_img }} = useContext(UserContext);
+  const { userAuth, userAuth: { access_token, profile_img, is_verified }} = useContext(UserContext);
 
   const handleUserNavPanel = () => {
     setUserNavPanel(!userNavPanel);
@@ -55,7 +55,7 @@ const NavbarComponent = () => {
           </Link>
 
           {
-            access_token ?
+            access_token && is_verified ?
             <>
               <Link to="/dashboard/notification">
                 <button className='w-12 h-12 rounded-full bg-gray-200 relative hover:bg-black/10'>

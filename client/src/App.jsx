@@ -5,6 +5,7 @@ import { createContext } from 'react'
 import { useState, useEffect } from 'react'
 import { lookInSession } from './common/session'
 import { Toaster } from 'react-hot-toast'
+import VerifyEmail from './pages/VerifyEmail'
 
 export const UserContext = createContext({});
 
@@ -23,7 +24,8 @@ const App = () => {
       <Routes>
         <Route path ="/" element={<NavbarComponent />} >
           <Route path = "/signin" element={<UserAuthFormPage type="signin" />} />
-          <Route path = "/signup" element={<UserAuthFormPage type="signup" />} />      
+          <Route path = "/signup" element={<UserAuthFormPage type="signup" />} />   
+          <Route path = "/verify-email/:token" element={<VerifyEmail />}/>   
         </Route>
       </Routes>
     </UserContext.Provider>

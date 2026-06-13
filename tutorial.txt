@@ -3,6 +3,7 @@ https://www.youtube.com/watch?v=J7BGuuuvDDk&list=PLqm86YkewF6QbR7QwqYWcAbl70Zhv0
 
 https://github.com/kunaal438/mern-blogging-website
 
+https://www.flaticon.com/uicons/interface-icons
 
 * {
   margin: 0;

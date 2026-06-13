@@ -1,6 +1,6 @@
 import InputComponent from '../components/InputComponent'
 import googleIcon from '../imgs/google.png'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import AnimationWrapper from '../common/page-animation'
 import { useRef, useContext } from 'react'
 import { toast } from 'react-hot-toast'
@@ -12,8 +12,9 @@ import { authWithGoogle } from '../common/firebase'
 const UserAuthFormPage = ({ type }) => {
 
     const authForm = useRef();
+    const navigate = useNavigate();
 
-    let { userAuth: { access_token }, setUserAuth } = useContext(UserContext);
+    let { userAuth: { access_token, is_verified, reset_params_token }, setUserAuth } = useContext(UserContext);
 
     const userAuthThroughServer = (ServerRouter, formData) => {
         
@@ -21,7 +22,14 @@ const UserAuthFormPage = ({ type }) => {
         .then(({ data }) => {
             storeInSession("user", JSON.stringify(data));
             setUserAuth(data);
-            toast.success(type == "signin" ? "Signed in successfully" : "Signed up successfully");
+            if(type == "signin") {
+                data.is_verified ? 
+                toast.success("Signed in successfully") :
+                toast.error("Email not verified");
+            }
+            if(type == "signup") {
+                navigate("/verify-email/" + data.reset_params_token);
+            }
         })
         .catch(({ response }) => {
             toast.error(response.data.error);
@@ -93,7 +101,7 @@ const UserAuthFormPage = ({ type }) => {
     }
 
   return (
-    access_token ?
+    access_token && is_verified ?
     <Navigate to="/"/>
     :
     <AnimationWrapper keyValue={type}>
