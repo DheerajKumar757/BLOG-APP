@@ -11,7 +11,7 @@ import { getAuth } from 'firebase-admin/auth';
 
 // Import Schema
 import User from './Schema/User.js';
-import { sendEmailVerificationSuccessMail, sendVerificationEmail } from './nodemailer/email.js';
+import { sendEmailVerificationSuccessMail, sendPasswordResetEmail, sendPasswordResetSuccessEmail, sendVerificationEmail } from './nodemailer/email.js';
 
 dotenv.config();
 
@@ -39,6 +39,7 @@ admin.initializeApp({
 
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
 let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for password
+let digitsRegex = /^\d+$/; // regex for token
 
 mongoose.connect(process.env.DB_LOCATION, {
     autoIndex: true
@@ -131,6 +132,10 @@ server.post("/verify-email/:token_param", async (req, res) => {
     const { token_param } = req.params;
     const { token_verify } = req.body;
 
+    if(!digitsRegex.test(token_verify)) {
+        return res.status(403).json({ "error":"S1009 Only digits are allowed." });
+    }
+
     User.findOne({
         "personal_info.resetTokenParams" : token_param
     })
@@ -156,7 +161,7 @@ server.post("/verify-email/:token_param", async (req, res) => {
 
             await user.save();
 
-            sendEmailVerificationSuccessMail(user.personal_info.email, user.personal_info.username, `${process.env.CLIENT_URL}/signin`);
+            sendEmailVerificationSuccessMail(user.personal_info.email, user.personal_info.fullname, `${process.env.CLIENT_URL}/signin`);
 
             return res.status(200).json(formatDatatoSend(user));
 
@@ -200,6 +205,121 @@ server.post("/signin", (req, res) => {
     .catch(err => {
         console.log(err.message);
         return res.status(500).json({ "error": err.message });
+    })
+
+})
+
+server.post("/forget-password", (req, res) => {
+    let { email } = req.body;
+
+    if(!email.length) {
+        return res.status(403).json({ "error":"Email is required" });
+    }
+
+    if(!emailRegex.test(email)) {
+        return res.status(403).json({ "error":"Email is invalid" });
+    }
+
+    User.findOne({ "personal_info.email" : email } )
+    .then(async (user) => {
+        if(!user) {
+            return res.status(403).json({"error": "Not a valid user."});
+        }
+
+        const passwordResetToken = Math.floor(100000 + Math.random() * 900000).toString();
+        const verificationParams = crypto.randomBytes(20).toString("hex");
+
+        user.personal_info.isVerified = false;
+        user.personal_info.resetToken = passwordResetToken;
+        user.personal_info.resetTokenParams = verificationParams;
+        user.personal_info.resetTokenExpiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+        
+        sendPasswordResetEmail(
+            user.personal_info.email, 
+            user.personal_info.fullname, 
+            passwordResetToken,
+            `${process.env.CLIENT_URL}/reset-password/${user.personal_info.username}/${verificationParams}`
+        );
+
+        await user.save().then((u) => {
+            return res.status(200).json({
+                "message": "Redirecting to set your password ...",
+                "pass_reset_username": user.personal_info.username,
+                "pass_reset_param": verificationParams
+            });
+        }).catch(err => {
+            return res.status(500).json({"error": "E1001 " + err.message});
+        });
+
+    })
+    .catch(err => {
+        return res.status(500).json({"error": "E1002 " + err.message});
+    })
+})
+
+server.post("/reset-password/:user_name/:reset_pass_param", async (req, res) => {
+    const { user_name, reset_pass_param } = req.params;
+    const { reset_pass_token, new_password } = req.body;
+
+    if(!new_password.length) {
+        return res.status(403).json({ "error":"Password is required" });
+    }
+    if(!passwordRegex.test(new_password)) {
+        return res.status(403).json({ "error":"Password should be between 6 to 20 characters and should contain at least one numeric digit, one uppercase and one lowercase letter" });
+    }
+    if(!digitsRegex.test(reset_pass_token)) {
+        return res.status(403).json({ "error":"S1008 Only digits are allowed." });
+    }
+
+    User.findOne({
+        "personal_info.resetTokenParams" : reset_pass_param,
+        "personal_info.username" : user_name
+    })
+    .then(async (user) => {
+        if(!user) {
+            return res.status(500).json({"error":"S1011 Something went wrong."});
+        }
+        if(user.personal_info.resetTokenExpiresAt < Date.now()) {
+            // if token has expired use forgot password
+            user.personal_info.resetToken = undefined;
+            user.personal_info.resetTokenParams = undefined;
+            user.personal_info.resetTokenExpiresAt = undefined;
+
+            await user.save();
+
+            // token has expired ask the user to reset his password
+            return res.status(500).json({"error":"S1005 Reset your password"});
+        }
+        if(user.personal_info.resetToken == reset_pass_token) {
+
+            bcrypt.hash(new_password, 10, async (err, hashed_pass) => {
+                user.personal_info.password = hashed_pass;
+                user.personal_info.isVerified = true;
+                user.personal_info.resetToken = undefined;
+                user.personal_info.resetTokenParams = undefined;
+                user.personal_info.resetTokenExpiresAt = undefined;
+
+                sendPasswordResetSuccessEmail(
+                    user.personal_info.email,
+                    user.personal_info.fullname,
+                    `${process.env.CLIENT_URL}/signin`
+                );
+
+                await user.save().then((u) => {
+                    return res.status(200).json({"success": "Password has been changed successfully"});
+                }).
+                catch(err => {
+                    return res.status(500).json({"error": "E1001 " + err.message});
+                });
+
+            });
+        }
+        else {
+            return res.status(500).json({"error":"S1010 Invalid token."});
+        }
+    })
+    .catch(err => {
+        return res.status(500).json({"error":err.message});
     })
 
 })

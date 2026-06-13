@@ -44,6 +44,20 @@ Huachao Mao
 Install nodemon as a dev dependency :
 npm install --save-dev nodemon
 
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+server.post("/reset-password/:user_name/:reset_pass_para", async (req, res) => {
+    const { user_name, reset_pass_param } = req.params;
+    const { reset_pass_token, new_password } = req.body;
+
+})
+
+if variables with same name as defined in the body of function are 
+not received from url parameters and body then they will remain undefined.
+
 #########################################################################
 #########################################################################
 #########################################################################
