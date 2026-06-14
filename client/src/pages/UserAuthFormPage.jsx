@@ -143,6 +143,14 @@ const UserAuthFormPage = ({ type }) => {
                 >
                     {type == "signin" ? "Sign In" : "Sign Up"}
                 </button>      
+                
+                {
+                    type == "signin" ?
+                    <p className='mt-6 text-gray-600 text-xl text-center'>
+                        Forgot your password ? <Link to="/forget-password" className='underline text-black text-xl ml-1'>click here.</Link>
+                    </p>  
+                    : ""       
+                }
 
                 <div className='relative w-full flex items-center gap-2 my-10 opacity-10 uppercase text-black font-bold'>
                     <hr className='w-1/2 border-back'/>

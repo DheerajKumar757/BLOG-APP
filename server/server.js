@@ -262,13 +262,16 @@ server.post("/reset-password/:user_name/:reset_pass_param", async (req, res) => 
     const { reset_pass_token, new_password } = req.body;
 
     if(!new_password.length) {
-        return res.status(403).json({ "error":"Password is required" });
+        return res.status(403).json({ "error":"S1006 Password is required" });
     }
     if(!passwordRegex.test(new_password)) {
-        return res.status(403).json({ "error":"Password should be between 6 to 20 characters and should contain at least one numeric digit, one uppercase and one lowercase letter" });
+        return res.status(403).json({ "error":"S1007 Password should be between 6 to 20 characters and should contain at least one numeric digit, one uppercase and one lowercase letter" });
+    }
+    if(!reset_pass_token.length) {
+        return res.status(403).json({ "error":"S1006 Verification Code can not be empty" });
     }
     if(!digitsRegex.test(reset_pass_token)) {
-        return res.status(403).json({ "error":"S1008 Only digits are allowed." });
+        return res.status(403).json({ "error":"S1008 Only digits are allowed in Verification Code." });
     }
 
     User.findOne({

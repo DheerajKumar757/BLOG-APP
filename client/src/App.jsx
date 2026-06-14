@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react'
 import { lookInSession } from './common/session'
 import { Toaster } from 'react-hot-toast'
 import VerifyEmail from './pages/VerifyEmail'
+import ForgetPassword from './pages/ForgetPassword'
+import ResetPassword from './pages/ResetPassword'
 
 export const UserContext = createContext({});
 
@@ -26,6 +28,8 @@ const App = () => {
           <Route path = "/signin" element={<UserAuthFormPage type="signin" />} />
           <Route path = "/signup" element={<UserAuthFormPage type="signup" />} />   
           <Route path = "/verify-email/:token" element={<VerifyEmail />}/>   
+          <Route path = "/forget-password" element={<ForgetPassword />}/>
+          <Route path = "/reset-password/:pass_username/:pass_param" element={<ResetPassword/>}/>
         </Route>
       </Routes>
     </UserContext.Provider>
