@@ -68,7 +68,11 @@ const ForgetPassword = () => {
                 </button>  
 
                 <p className='mt-6 text-gray-600 text-xl text-center'>
-                    Did not received mail ? <Link to="" className='underline text-black text-xl ml-1'>Retry</Link>
+                    Alreday a member ? <Link to="/signin" className='underline text-black text-xl ml-1'>Sign in here.</Link>
+                </p>
+
+                <p className='mt-6 text-gray-600 text-xl text-center'>
+                    Don't have an account ? <Link to="/signup" className='underline text-black text-xl ml-1'>Join us today.</Link>
                 </p>
 
 

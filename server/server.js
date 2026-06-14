@@ -185,8 +185,8 @@ server.post("/signin", (req, res) => {
         if(!user) {
             return res.status(403).json({"error": "Email not found"});
         }
-        else if(user.google_auth) {
-            return res.status(403).json({"error": "Please use google to sign in."});
+        if(!user.personal_info.password) {
+            return res.status(403).json({"error": "Password not set! You can set a password with forget password button below."});
         }
 
         bcrypt.compare(password, user.personal_info.password, (err, match) => {
@@ -338,22 +338,17 @@ server.post("/google-auth", (req, res) => {
         let { name, email, picture } = decodedUser;
         picture = picture.replace("s96-c", "s384-c");
 
-        let user = await User.findOne({"personal_info.email":email}).select("personal_info.fullname personal_info.username personal_info.profile_img google_auth")
+        let user = await User.findOne({"personal_info.email":email}).select("personal_info.fullname personal_info.username personal_info.profile_img personal_info.isVerified google_auth")
         .then((u) => {return u || null})
         .catch((err) => {
             return res.status(500).json({"error":err.message})
         })
 
-        if(user) {
-            if(!user.google_auth){
-                return res.status(403).json({"error": "Email was signed up without google. Please login with password."})
-            }
-        }
-        else {
+        if(!user) {
             let username = await generateUsername(email);
 
             user = new User({
-                personal_info: { fullname: name, email, profile_img: picture, username },
+                personal_info: { fullname: name, email, profile_img: picture, username, isVerified: true },
                 google_auth: true
             })
 
@@ -369,6 +364,14 @@ server.post("/google-auth", (req, res) => {
             .catch(err => {
                 return res.status(500).json({"error": err.message})
             })
+        }
+        else {
+            // if user sign up with local strategy but mail is not verifed and then tries to login with google
+            // in this case `isVerified` should be set to true.
+            user.personal_info.isVerified = true;
+            user.personal_info.profile_img = picture;
+            user.google_auth = true;
+            await user.save();
         }
 
         return res.status(200).json(formatDatatoSend(user));

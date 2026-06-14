@@ -104,7 +104,7 @@ const ResetPassword = () => {
                 </button>  
 
                 <p className='mt-6 text-gray-600 text-xl text-center'>
-                    Did not received mail ? <Link to="" className='underline text-black text-xl ml-1'>Retry</Link>
+                    Did not received mail ? <Link to="/forget-password" className='underline text-black text-xl ml-1'>Retry</Link>
                 </p>
 
 
