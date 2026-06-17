@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast'
 import VerifyEmail from './pages/VerifyEmail'
 import ForgetPassword from './pages/ForgetPassword'
 import ResetPassword from './pages/ResetPassword'
+import Editor from './pages/Editor'
 
 export const UserContext = createContext({});
 
@@ -24,6 +25,7 @@ const App = () => {
     <UserContext.Provider value={{userAuth, setUserAuth}}>
       <Toaster />
       <Routes>
+        <Route path = "/editor" element={<Editor />} />
         <Route path ="/" element={<NavbarComponent />} >
           <Route path = "/signin" element={<UserAuthFormPage type="signin" />} />
           <Route path = "/signup" element={<UserAuthFormPage type="signup" />} />   
