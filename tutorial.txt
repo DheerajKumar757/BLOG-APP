@@ -26,6 +26,27 @@ MileStones :
 C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and backend.
 
 
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+To check data of sesion storage from JS
+window.sessionStorage
+
+To add key value pair in session storage
+sessionStorage.setItem("username", "Alex");
+
+To get the value of particular key from session storage
+const user = sessionStorage.getItem("username");
+console.log(user); // Output: "Alex"
+
+To remove a particular key value pair from session storage.
+sessionStorage.removeItem("username");
+
+to clear all the data of session storage of a particular domain.
+sessionStorage.clear();
+
 #########################################################################
 #########################################################################
 #########################################################################
