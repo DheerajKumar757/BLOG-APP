@@ -1,3 +1,4 @@
 requests.rest
 .env
 internal.txt
+upload/images/*

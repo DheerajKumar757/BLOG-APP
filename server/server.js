@@ -8,12 +8,20 @@ import cors from 'cors';
 import admin from 'firebase-admin';
 import crypto from "crypto"
 import { getAuth } from 'firebase-admin/auth';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
 
 // Import Schema
 import User from './Schema/User.js';
 import { sendEmailVerificationSuccessMail, sendPasswordResetEmail, sendPasswordResetSuccessEmail, sendVerificationEmail } from './nodemailer/email.js';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const server = express();
 
@@ -44,6 +52,67 @@ let digitsRegex = /^\d+$/; // regex for token
 mongoose.connect(process.env.DB_LOCATION, {
     autoIndex: true
 })
+
+
+const storage_ = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, "upload", "images", "blogs");
+    try {
+      // Create directory if it doesn't exist
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      cb(null, dir);
+    }
+    catch (error) {
+      cb(error, null);
+    }
+  },
+  
+  filename: (req, file, cb) => {
+    try {
+      const filename = `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`;
+      cb(null, filename);
+    }
+    catch (error) {
+      cb(error, null);
+    }
+  }
+});
+
+const upload = multer({
+  storage: storage_,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 1 MB limit
+  fileFilter: (req, file, cb) => {
+    const allowed = /jpg|jpeg|png/;
+    const isValid = allowed.test(path.extname(file.originalname).toLowerCase());
+    
+    if (isValid) cb(null, true);
+    else cb(new Error("Only image files allowed"), false);
+  }
+});
+
+server.use('/images', express.static('upload/images/blogs'))
+
+server.post("/blog-banner-url", upload.single('blog_banner'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: 0, message: "No file uploaded" });
+  }
+  
+  res.status(200).json({
+    success: 1,
+    blogBannerUrl: `http://localhost:${PORT}/images/${req.file.filename}`
+  });
+
+}, (error, req, res, next) => {
+  //This catches ALL Multer errors (destination, filename, fileFilter, limits)
+  console.error("Multer error:", error.message);
+  
+  res.status(error.status || 500).json({
+    success: 0,
+    message: error.message || "Upload failed"
+  });
+});
 
 const formatDatatoSend = (user) => {
 
