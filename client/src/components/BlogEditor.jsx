@@ -1,17 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import logo from "../imgs/logo.png"
 import AnimationWrapper from '../common/page-animation'
 import defaultBanner from "../imgs/blog banner.png"
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
-import { useRef } from 'react'
+import { EditorContext } from '../pages/Editor'
 
 
 
 const BlogEditor = () => {
 
-    let blogBannerRef = useRef()
+    let { blog, blog : { title, banner, content, tags, des }, setBlog } = useContext(EditorContext);
 
     const handleBannerUpload = (e) => {
         console.log(e);
@@ -25,7 +25,8 @@ const BlogEditor = () => {
             let loadingToast = toast.loading("Uploading...")
             axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/blog-banner-url", formData)
             .then(({ data }) => {
-                blogBannerRef.current.src = data.blogBannerUrl;
+                //blogBannerRef.current.src = data.blogBannerUrl;
+                setBlog({ ...blog, banner: data.blogBannerUrl});
                 toast.dismiss(loadingToast)
                 toast.success("Uploaded")
             })
@@ -48,6 +49,13 @@ const handleTitleChange = (e) => {
     let input = e.target;
     input.style.height = 'auto';
     input.style.height = input.scrollHeight + "px";
+
+    setBlog({ ...blog, title: input.value})
+}
+
+const handleError = (e) => {
+    let img = e.target;
+    img.src = defaultBanner;
 }
 
   return (
@@ -57,7 +65,7 @@ const handleTitleChange = (e) => {
                 <img src={logo} />
             </Link>
             <p className='max-md:hidden text-black line-clamp-1 w-full'>
-                New Blog
+                { title.length ? title : "New Blog"}
             </p>
 
             <div className='flex gap-4 ml-auto'>
@@ -76,9 +84,9 @@ const handleTitleChange = (e) => {
                     <div className='relative aspect-video hover:opacity-80 bg-white border-4 border-gray-200'>
                         <label htmlFor='uploadBanner'>
                             <img 
-                                ref={blogBannerRef}
-                                src={defaultBanner}
+                                src={banner.length ? banner : defaultBanner}
                                 className='z-20'
+                                onError={handleError}
                             />
                             <input 
                                 id="uploadBanner"
@@ -99,6 +107,8 @@ const handleTitleChange = (e) => {
                     >
 
                     </textarea>
+
+                    <hr className='w-full opacity-10 my-5'/>
 
                 </div>
             </section>
