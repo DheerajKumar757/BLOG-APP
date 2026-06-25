@@ -13,7 +13,7 @@
     }
 
     html{
-        @apply overflow-x-hidden;
+        overflow-x: hidden
     }
 
     body {
@@ -21,7 +21,7 @@
     }
 
     i {
-        @apply mt-0.5;
+        margin-top: 2px;
     }
 
     section{
@@ -77,4 +77,19 @@
 .cdx-settings-button[data-tune='withBackground'],
 .cdx-settings-button[data-tune='stretched'] {
   display: none;
+}
+
+/* Base EditorJS Header Weight */
+.ce-header {
+  font-weight: 600 !important;
+}
+
+/* Consolidated Heading Font Sizes */
+h1.ce-header { font-size: 2.5rem !important; }
+h2.ce-header { font-size: 2rem !important; }
+h3.ce-header { font-size: 1.5rem !important; }
+
+/* Disable Transitions to Prevent Editor Glitches */
+.codex-editor * {
+  transition: none !important;
 }
