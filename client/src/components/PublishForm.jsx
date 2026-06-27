@@ -73,7 +73,9 @@ const PublishForm = () => {
 
         </div>
 
-        <div className='border-gray-300 lg:border-2 lg:pl-8'>
+        <div className='border-gray-300 lg:border-2 lg:p-3 justify-center content-center' >
+
+            <h1 className='text-gray-900 text-center text-xl font-bold mb-2 mt-9'>Publish Your Blog</h1>
             
             <p className='text-gray-700 mb-2 mt-9'>Blog Title</p>
             <input 
@@ -108,10 +110,14 @@ const PublishForm = () => {
                 onKeyDown={handleTagsKeyDown}
               />
               {
-                tags.map((tag, i) => { return <Tag tag={tag} key={i}/> })
+                tags.map((tag, i) => { return <Tag tag={tag} tagIndex={i} key={i}/> })
               }
             </div>
+            <p className='mt-1 text-gray-700 text-sm text-right'>
+              {tagLimit - tags.length} tags left
+            </p>
             
+            <button className='btn-dark px-8'>Publish</button>
         </div>
 
       </section>
