@@ -2,10 +2,12 @@ import React, { useContext } from 'react'
 import AnimationWrapper from "../common/page-animation"
 import { Toaster, toast } from "react-hot-toast"
 import { EditorContext } from '../pages/Editor'
+import Tag from './Tags'
 
 const PublishForm = () => {
 
   let characterLimit = 200;
+  let tagLimit = 10;
 
   let { blog, blog: { banner, title, tags, des }, setEditorState, setBlog } = useContext(EditorContext)
 
@@ -26,8 +28,26 @@ const PublishForm = () => {
   const handleDesKeyDown = (e) => {
     if(e.keyCode == 13) { // enter key
         e.preventDefault()
+    }
   }
-}
+
+  const handleTagsKeyDown = (e) => {
+    console.log(e.keyCode);
+    if(e.keyCode == 13 || e.keyCode == 188) { // enter and comma
+      e.preventDefault()
+      let tag = e.target.value;
+      if(tags.length < tagLimit) {
+        if(tag.length && !tags.includes(tag)) {
+          setBlog({...blog, tags: [...tags, tag]})
+        }
+      }
+      else {
+        toast.error(`You can add max ${tagLimit}`)
+      }
+      e.target.value = "";
+    }
+   
+  }
 
   return (
     <AnimationWrapper>
@@ -76,6 +96,21 @@ const PublishForm = () => {
             <p className='mt-1 text-gray-700 text-sm text-right'>
               {characterLimit - des.length} characters left
             </p>
+
+            <p className='text-gray-800 mb-2 mt-9'>
+              Topics - (Helps in searching and ranking your blog post)
+            </p>
+            <div className='relative input-box pl-2 py-2 pb-4'>
+              <input 
+                type="text" 
+                placeholder='Topic' 
+                className='sticky input-box bg-white top-0 left-0 p-4 mb-4'
+                onKeyDown={handleTagsKeyDown}
+              />
+              {
+                tags.map((tag, i) => { return <Tag tag={tag} key={i}/> })
+              }
+            </div>
             
         </div>
 
