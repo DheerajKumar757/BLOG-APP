@@ -114,6 +114,24 @@ server.post("/blog-banner-url", upload.single('blog_banner'), (req, res) => {
   });
 });
 
+const verifyJWT = (req, res, next) => {
+
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(" ")[1]
+
+    if(token == null) {
+        return res.status(401).json({error: "No access token"});
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET_ACCESS_KEY, (err, user) => {
+        if(err) {
+            return res.status(403).json({ error: "Access token is invalid"})
+        }
+        req.user = user.id;
+        next();
+    })
+}
+
 const formatDatatoSend = (user) => {
 
     const access_token = jwt.sign({id: user._id}, process.env.JWT_SECRET_ACCESS_KEY, {expiresIn: "1d"});
@@ -449,6 +467,10 @@ server.post("/google-auth", (req, res) => {
     .catch((err) => {
         return res.status(500).json({"error":"Failed to login user Google, use other account!"})
     })
+})
+
+server.post('/create-blog', verifyJWT, (req, res) => {
+    return res.json(req.user);
 })
 
 server.listen(PORT, () => {

@@ -29,6 +29,19 @@ C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and
 #########################################################################
 #########################################################################
 
+To access the create-blog route client will need to send the access_token using Authorization Header
+create vlog route is protected using middle-ware.
+Authorization: Bearer <token>
+Server will first verify the token using its secret and then it will get the user id(mongo user id)
+Then only create-blog can be access.
+
+Security Issue :
+access_token should also be stored in a session on server.
+
+#########################################################################
+#########################################################################
+#########################################################################
+
 EditorJS -> Opensource node package.
 
 https://github.com/codex-team/editor.js
