@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
-const InPageNavigation = ({ routes }) => {
+const InPageNavigation = ({ routes, defaultActiveIndex = 0 }) => {
 
   let activeTabLineRef = useRef();
+  let activeTabRef = useRef();
 
-  let [ inPageNavIndex, setInPageNavIndex ] = useState(0);
+  let [ inPageNavIndex, setInPageNavIndex ] = useState(defaultActiveIndex);
 
   const changePageState = (btn, i) => {
 
@@ -16,6 +17,10 @@ const InPageNavigation = ({ routes }) => {
     setInPageNavIndex(i);
   }
 
+  useEffect(() => {
+    changePageState(activeTabRef.current, defaultActiveIndex)
+  }, [])
+
   return (
     <>
       <div className='relative mb-8 bg-white border-b border-gray-200 flex flex-nowrap overflow-x-auto'>
@@ -24,6 +29,7 @@ const InPageNavigation = ({ routes }) => {
             return (
               // key helps in differentiationg the button
               <button 
+                ref={ i == defaultActiveIndex ? activeTabRef : null }
                 key={i} 
                 className={'p-4 px-5 capitalize ' + ( inPageNavIndex == i ? "text-black" : "text-gray-700")}
                 onClick={(e) => { changePageState(e.target, i) }}
