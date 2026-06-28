@@ -7,7 +7,9 @@ const HomePage = () => {
             <section className="h-cover flex justify-center gap-10">
                 {/* latest blogs */}
                 <div className="w-full">
-                    <p>Latest Blogs</p>
+                    <InPageNavigation routes={["home", "trending blogs"]}>
+
+                    </InPageNavigation>
                 </div>
 
                 {/* filters and trending blogs */}
