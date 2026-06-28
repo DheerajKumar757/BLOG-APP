@@ -9,6 +9,7 @@ import VerifyEmail from './pages/VerifyEmail'
 import ForgetPassword from './pages/ForgetPassword'
 import ResetPassword from './pages/ResetPassword'
 import Editor from './pages/Editor'
+import HomePage from './pages/HomePage'
 
 export const UserContext = createContext({});
 
@@ -27,6 +28,7 @@ const App = () => {
       <Routes>
         <Route path = "/editor" element={<Editor />} />
         <Route path ="/" element={<NavbarComponent />} >
+          <Route index element={ <HomePage /> }/>
           <Route path = "/signin" element={<UserAuthFormPage type="signin" />} />
           <Route path = "/signup" element={<UserAuthFormPage type="signup" />} />   
           <Route path = "/verify-email/:token" element={<VerifyEmail />}/>   
