@@ -12,6 +12,10 @@ const HomePage = () => {
                         defaultHidden={["trending blogs"]}
                     >
 
+                        <h1>Latest Blogs Here</h1>
+
+                        <h1>Trending Blogs Here</h1>
+
                     </InPageNavigation>
                 </div>
 

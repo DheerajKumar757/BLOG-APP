@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-const InPageNavigation = ({ routes, defaultHidden = [], defaultActiveIndex = 0 }) => {
+const InPageNavigation = ({ routes, defaultHidden = [], defaultActiveIndex = 0, children }) => {
 
   let activeTabLineRef = useRef();
   let activeTabRef = useRef();
@@ -47,6 +47,9 @@ const InPageNavigation = ({ routes, defaultHidden = [], defaultActiveIndex = 0 }
         <hr ref={activeTabLineRef} className='absolute  bottom-0 duration-300' />
 
       </div>
+
+      { children }
+
     </>
   )
 }
