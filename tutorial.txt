@@ -22,8 +22,25 @@ npm run dev
 To start mongodb compass form terminal
 mongodb-compass
 
+setTimeout(() => {
+  console.log("This message appears after 3 seconds.");
+}, 3000);
+
 MileStones :
 C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and backend.
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+Setup like below to simulate delay so Loader appears.
+
+useEffect(() => {
+    setTimeout(() => {
+        console.log("This message appears after 9 seconds.");
+        fetchLatestBlogs();
+    }, 9000);
+}, [])
 
 #########################################################################
 #########################################################################
