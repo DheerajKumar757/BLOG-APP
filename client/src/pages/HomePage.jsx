@@ -12,6 +12,19 @@ const HomePage = () => {
     let [ blogs, setBlog ] = useState(null);
     let [ trendingBlogs, setTrendingBlog ] = useState(null);
 
+    let categories = [
+        "programming",
+        "technology",
+        "gaming",
+        "sports",
+        "entertainment",
+        "politics",
+        "science",
+        "health",
+        "travel", 
+        "food"
+    ];
+
     const fetchLatestBlogs = () => {
         axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs")
         .then(({ data }) => {
@@ -41,7 +54,7 @@ const HomePage = () => {
         <AnimationWrapper>
             <section className="h-cover flex justify-center gap-10">
                 {/* latest blogs */}
-                <div className="w-full">
+                <div className="w-full lg:max-w-225">
                     <InPageNavigation
                         routes={["home", "trending blogs"]}
                         defaultHidden={["trending blogs"]}
@@ -81,24 +94,38 @@ const HomePage = () => {
 
                     <div className="flex flex-col gap-10">
                         
-                        <h2 className="font-medium text-xl mb-8">Stories from all interests</h2>
+                        <div>
+                            <h2 className="font-medium text-xl mb-8">Stories from all interests</h2>
 
-                    </div>
+                            <div className="flex gap-3 flex-wrap">
+                                {
+                                    categories.map((category, i) => {
+                                        return (
+                                            <button className="tag">
+                                                { category }
+                                            </button>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
 
-                    <div>
-                        <h2 className="font-medium text-xl mb-8">
-                            Trending <i className="fi fi-rr-arrow-trend-up"></i>
-                        </h2>
-                        {
-                            trendingBlogs == null ? <Loader /> :
-                            trendingBlogs.map((blog, i) => {
-                                return (
-                                    <AnimationWrapper transition={{ duration: 1, delay:i*.1 }} keyValue={-i}>
-                                        <MinimalBlogPost blog={blog} index={i} />
-                                    </AnimationWrapper>
-                                )
-                            })
-                        }
+                        <div>
+                            <h2 className="font-medium text-xl mb-8">
+                                Trending <i className="fi fi-rr-arrow-trend-up"></i>
+                            </h2>
+                            {
+                                trendingBlogs == null ? <Loader /> :
+                                trendingBlogs.map((blog, i) => {
+                                    return (
+                                        <AnimationWrapper transition={{ duration: 1, delay:i*.1 }} keyValue={-i}>
+                                            <MinimalBlogPost blog={blog} index={i} />
+                                        </AnimationWrapper>
+                                    )
+                                })
+                            }
+                        </div>
+                    
                     </div>
 
                 </div>                
