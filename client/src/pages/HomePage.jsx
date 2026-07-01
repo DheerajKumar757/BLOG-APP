@@ -4,6 +4,7 @@ import InPageNavigation from "../components/InPageNavigation"
 import axios from 'axios'
 import { useState } from "react"
 import Loader from "../components/Loader"
+import BlogPostCard from "../components/BlogPostCard"
 
 const HomePage = () => {
 
@@ -37,7 +38,11 @@ const HomePage = () => {
                             {
                                 blogs == null ? <Loader /> :
                                 blogs.map((blog, i) => {
-                                    return <h1 key={i}>{ blog.title }</h1>
+                                    return (
+                                        <AnimationWrapper transition={{ duration: 1, delay:i*.1 }} keyValue={i}>
+                                            <BlogPostCard content={blog} author={blog.author.personal_info} />
+                                        </AnimationWrapper>
+                                    )
                                 })
                             }
                         </>

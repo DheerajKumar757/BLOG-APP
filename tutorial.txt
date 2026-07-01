@@ -33,6 +33,46 @@ C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and
 #########################################################################
 #########################################################################
 
+
+<AnimationWrapper transition={{ duration: 1, delay: i * 0.1 }} keyValue={i}>
+  <BlogPostCard content={blog} author={blog.author.personal_info} />
+</AnimationWrapper>
+
+
+duration: 1 means the animation takes 1 second to complete.
+
+delay: i * 0.1 means each item waits before starting.
+So if i is:
+0 → delay = 0s
+1 → delay = 0.1s
+2 → delay = 0.2s
+3 → delay = 0.3s
+
+This creates a staggered animation effect, where cards appear one after another instead of all at once.
+Simple example
+If you have 5 blog cards:
+1st card starts immediately.
+2nd card starts 0.1s later.
+3rd card starts 0.2s later.
+4th card starts 0.3s later.
+5th card starts 0.4s later.
+
+Each card still animates for 1 second, but they begin at different times.
+
+Small note
+You wrote dealy in your question, but the correct prop name is delay.
+
+In Framer Motion terms
+initial = starting state
+animate = final state
+duration = how long the change takes
+delay = how long to wait before starting
+
+So your wrapper makes every blog card fade in slowly, one after another.
+
+
+========================
+
 Setup like below to simulate delay so Loader appears.
 
 useEffect(() => {
