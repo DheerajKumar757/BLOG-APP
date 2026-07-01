@@ -70,15 +70,15 @@
     }
 
     #textEditor h1, h1{
-        @apply !font-inter !text-5xl !leading-tight !font-bold max-md:!text-4xl max-md:!leading-snug;
+        @apply !font-inter !text-3xl !leading-tight !font-bold max-md:!leading-snug;
     }
 
     #textEditor h2, h2{
-        @apply !font-inter !text-4xl !leading-normal !font-bold max-md:!text-3xl max-md:!leading-snug;
+        @apply !font-inter !text-2xl !leading-normal !font-bold max-md:!leading-snug;
     }
 
     #textEditor h3, h3 {
-        @apply !font-inter !text-3xl !leading-loose max-md:!text-2xl max-md:!leading-normal;
+        @apply !font-inter !text-xl !leading-loose max-md:!leading-normal;
     }
 
     #textEditor *, .blog-page-content *{
