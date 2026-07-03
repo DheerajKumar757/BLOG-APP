@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { act, useEffect } from "react"
 import AnimationWrapper from "../common/page-animation"
 import InPageNavigation from "../components/InPageNavigation"
 import axios from 'axios'
@@ -6,6 +6,7 @@ import { useState } from "react"
 import Loader from "../components/Loader"
 import BlogPostCard from "../components/BlogPostCard"
 import MinimalBlogPost from "../components/NoBannerBlogPost"
+import { activeTabRef } from "../components/InPageNavigation"
 
 const HomePage = () => {
 
@@ -60,6 +61,8 @@ const HomePage = () => {
     }
 
     useEffect(() => {
+        activeTabRef.current.click();
+        
         if(pageState == "home") {
             fetchLatestBlogs();
         }
