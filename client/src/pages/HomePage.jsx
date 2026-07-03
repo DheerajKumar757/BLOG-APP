@@ -7,6 +7,7 @@ import Loader from "../components/Loader"
 import BlogPostCard from "../components/BlogPostCard"
 import MinimalBlogPost from "../components/NoBannerBlogPost"
 import { activeTabRef } from "../components/InPageNavigation"
+import NoDataMessage from "../components/NoDataMessage"
 
 const HomePage = () => {
 
@@ -97,27 +98,58 @@ const HomePage = () => {
 
                         <>
                             {
-                                blogs == null ? <Loader /> :
-                                blogs.map((blog, i) => {
-                                    return (
-                                        <AnimationWrapper transition={{ duration: 1, delay:i*.1 }} keyValue={i}>
-                                            <BlogPostCard content={blog} author={blog.author.personal_info} />
-                                        </AnimationWrapper>
+                                blogs == null ? (
+                                    <Loader /> 
+                                ) : (
+                                    blogs.length ? (
+                                        blogs.map((blog, i) => {
+                                            return (
+                                                <AnimationWrapper
+                                                    transition={{
+                                                        duration: 1,
+                                                        delay:i*.1
+                                                    }} 
+                                                    keyValue={i}>
+                                                    <BlogPostCard
+                                                        content={blog}
+                                                        author={blog.author.personal_info}
+                                                    />
+                                                </AnimationWrapper>
+                                            )
+                                        })
+                                    ) : (
+                                        <NoDataMessage message="No blogs available for this category" />
                                     )
-                                })
+                                )
                             }
                         </>
 
                         <>
                             {
-                                trendingBlogs == null ? <Loader /> :
-                                trendingBlogs.map((blog, i) => {
-                                    return (
-                                        <AnimationWrapper transition={{ duration: 1, delay:i*.1 }} keyValue={-i}>
-                                            <MinimalBlogPost blog={blog} index={i} />
-                                        </AnimationWrapper>
+                                trendingBlogs == null ? (
+                                    <Loader />
+                                ) : (
+                                    trendingBlogs.length ? (
+                                        trendingBlogs.map((blog, i) => {
+                                            return (
+                                                <AnimationWrapper
+                                                    transition={{
+                                                        duration: 1,
+                                                        delay:i*.1 
+                                                    }}
+                                                    keyValue={-i}
+                                                >
+                                                    <MinimalBlogPost
+                                                        blog={blog}
+                                                        index={i} 
+                                                    />
+                                                </AnimationWrapper>
+                                            )
+                                        })
+                                    ) : (
+                                        <NoDataMessage message="No trending blogs available" />
                                     )
-                                })
+                                )
                             }
                         </>
 
@@ -154,14 +186,30 @@ const HomePage = () => {
                                 Trending <i className="fi fi-rr-arrow-trend-up"></i>
                             </h2>
                             {
-                                trendingBlogs == null ? <Loader /> :
-                                trendingBlogs.map((blog, i) => {
-                                    return (
-                                        <AnimationWrapper transition={{ duration: 1, delay:i*.1 }} keyValue={-i}>
-                                            <MinimalBlogPost blog={blog} index={i} />
-                                        </AnimationWrapper>
+                                trendingBlogs == null ? (
+                                    <Loader /> 
+                                ) : (
+                                    trendingBlogs.length ? (
+                                        trendingBlogs.map((blog, i) => {
+                                            return (
+                                                <AnimationWrapper
+                                                    transition={{
+                                                        duration: 1,
+                                                        delay:i*.1
+                                                    }}
+                                                    keyValue={-i}
+                                                >
+                                                    <MinimalBlogPost
+                                                        blog={blog}
+                                                        index={i}
+                                                    />
+                                                </AnimationWrapper>
+                                            )
+                                        })
+                                    ) : (
+                                        <NoDataMessage message="No trending blogs available" />
                                     )
-                                })
+                                )
                             }
                         </div>
                     
