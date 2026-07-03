@@ -11,6 +11,7 @@ const HomePage = () => {
 
     let [ blogs, setBlog ] = useState(null);
     let [ trendingBlogs, setTrendingBlog ] = useState(null);
+    let [ pageState, setPageState ] = useState("home");
 
     let categories = [
         "programming",
@@ -45,10 +46,27 @@ const HomePage = () => {
         })
     }
 
+    const loadBlogByCategory = (e) => {
+        let category = e.target.innerText.toLowerCase(); // returns the category name of button clicked
+
+        setBlog(null); // reset the blogs state to null to show loader while fetching new data
+
+        if(pageState == category) {
+            setPageState("home");
+            return;
+        }
+
+        setPageState(category);
+    }
+
     useEffect(() => {
-        fetchLatestBlogs();
-        fetchTrendingBlogs();
-    }, [])
+        if(pageState == "home") {
+            fetchLatestBlogs();
+        }
+        if(!trendingBlogs) {
+            fetchTrendingBlogs();
+        }
+    }, [pageState])
 
     return (
         <AnimationWrapper>
@@ -56,7 +74,7 @@ const HomePage = () => {
                 {/* latest blogs */}
                 <div className="w-full lg:max-w-225">
                     <InPageNavigation
-                        routes={["home", "trending blogs"]}
+                        routes={[pageState, "trending blogs"]}
                         defaultHidden={["trending blogs"]}
                     >
 
@@ -101,7 +119,11 @@ const HomePage = () => {
                                 {
                                     categories.map((category, i) => {
                                         return (
-                                            <button className="tag">
+                                            <button 
+                                                onClick={loadBlogByCategory} 
+                                                className={"tag " + (pageState == category ? " bg-black text-white " : " ")} 
+                                                key={i}
+                                            >
                                                 { category }
                                             </button>
                                         )
