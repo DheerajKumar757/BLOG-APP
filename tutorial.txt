@@ -29,6 +29,29 @@ setTimeout(() => {
 MileStones :
 C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and backend.
 
+#########################################################################
+#########################################################################
+#########################################################################
+
+To impl the pagination property we will first need to change the data structure.
+Currently blogs and trendingBlogs looks like
+blogs = [ {}, {}, {} ]
+But to use pagination it will be changed to 
+blogs = {
+  results : [ {}, {}, {} ],
+  page : <num>,
+  totalDocs: <num>
+}
+
+page is current page
+totalDocs is to check if there are still pages left.
+
+
+skip((page - 1) * maxLimit)
+if req is for the first page there will be no skip.
+if requested page is 4 then 3*maxLimit will be skipped and 4th page data will be sent as response.
+
+
 
 #########################################################################
 #########################################################################

@@ -8,6 +8,8 @@ import BlogPostCard from "../components/BlogPostCard"
 import MinimalBlogPost from "../components/NoBannerBlogPost"
 import { activeTabRef } from "../components/InPageNavigation"
 import NoDataMessage from "../components/NoDataMessage"
+import { filterPaginationData } from "../common/filter-pagination-data"
+import LoadMoreDataBtn from "../components/LoadMoreDataBtn"
 
 const HomePage = () => {
 
@@ -28,10 +30,16 @@ const HomePage = () => {
         "food"
     ];
 
-    const fetchLatestBlogs = () => {
-        axios.get(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs")
-        .then(({ data }) => {
-            setBlog(data.blogs);
+    const fetchLatestBlogs = ({page = 1}) => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/latest-blogs", { page })
+        .then( async ({ data }) => {
+            let formatedData = await filterPaginationData({
+                state: blogs, // blogs state which is already present.
+                data: data.blogs, // new blog data to be appended.
+                page, // requeseted page number whose data is being fetched.
+                countRoute: "/all-latest-blogs-count"
+            })
+            setBlog(formatedData);
         })
         .catch(err => {
             console.log(err);
@@ -75,7 +83,7 @@ const HomePage = () => {
         activeTabRef.current.click();
         
         if(pageState == "home") {
-            fetchLatestBlogs();
+            fetchLatestBlogs({ page: 1});
         }
         else {
             fetchBlogsByCategory();
@@ -101,8 +109,8 @@ const HomePage = () => {
                                 blogs == null ? (
                                     <Loader /> 
                                 ) : (
-                                    blogs.length ? (
-                                        blogs.map((blog, i) => {
+                                    blogs.results.length ? (
+                                        blogs.results.map((blog, i) => {
                                             return (
                                                 <AnimationWrapper
                                                     transition={{
@@ -122,6 +130,7 @@ const HomePage = () => {
                                     )
                                 )
                             }
+                            <LoadMoreDataBtn state={blogs} fetchDataFun={fetchLatestBlogs}/>
                         </>
 
                         <>
