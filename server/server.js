@@ -520,10 +520,19 @@ server.get("/trending-blogs", (req, res) => {
 })
 
 server.post("/search-blogs", (req, res) => {
-    let { tag, page } = req.body;
+    let { tag, query, page } = req.body;
+    console.log("tag=" + tag + " page=" + page + " query=" + query);
 
-    // query to find blogs with the specified tag in tags array and not in draft mode
-    let findQuery = {tags: { $regex: tag, $options: 'i' }, draft: false};
+    let findQuery = {};
+
+    if(tag) {
+         // query to find blogs with the specified tag in tags array and not in draft mode
+        findQuery = {tags: { $regex: tag, $options: 'i' }, draft: false};
+    }
+    else if(query) {
+        // case-insensitive search for title
+        findQuery = { draft: false, title: new RegExp(query, 'i') }; 
+    }
 
 
     let maxLimit = 5;
@@ -545,9 +554,18 @@ server.post("/search-blogs", (req, res) => {
 })
 
 server.post('/search-blogs-count', (req, res) => {
-    let { tag } = req.body;
+    let { tag, query } = req.body;
 
-    let findQuery = {tags: { $regex: tag, $options: 'i' }, draft: false};
+    let findQuery = {};
+    if(tag) {
+        // counts total documents with the specified tag in tags array and not in draft mode
+        findQuery = {tags: { $regex: tag, $options: 'i' }, draft: false};
+    }
+    else if(query) {
+        // counts total documents using title
+        findQuery = { draft: false, title: new RegExp(query, 'i') };
+    }
+
 
     Blog.countDocuments(findQuery)
     .then(count => {

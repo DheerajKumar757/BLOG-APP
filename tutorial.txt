@@ -12,6 +12,8 @@ https://www.flaticon.com/uicons/interface-icons
 
 border border-dashed border-green-500
 
+className='flex justify-center items-center h-screen'
+
 To start frontend :
 npm run dev
 
@@ -28,6 +30,31 @@ setTimeout(() => {
 
 MileStones :
 C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and backend.
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+const searchBlogs = ({ page = 1, create_new_arr = false }) => {
+  ...
+}
+
+if we call above function like searchBlogs() it will throw error 
+Cannot read properties of undefined (reading 'page')
+
+
+The fix is to add a default value for the whole parameter like below:
+
+const searchBlogs = ({ page = 1, create_new_arr = false } = {}) => {
+  ...
+}
+
+The `= {}` at the end means: "if no argument is passed, use an empty object as default". 
+Then the inner defaults (`page = 1`, `create_new_arr = false`) kick in.
+
+So calling `searchBlogs()` will now work because it becomes equivalent to `searchBlogs({})`, 
+which then uses `page = 1` and `create_new_arr = false`.
+
 
 #########################################################################
 #########################################################################
