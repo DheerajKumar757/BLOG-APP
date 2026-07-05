@@ -34,8 +34,16 @@ const SearchPage = () => {
 
     }
 
+    const resetState = () => {
+        setBlog(null);
+    }
+
     useEffect(() => {
-        searchBlogs();
+        resetState();
+        // note that even if blogs has been set to null `blogs` state is still not null.
+        // that is why `create_new_arr` is set to true so that a new array will be created
+        // within `filterPaginationData`. 
+        searchBlogs({create_new_arr : true});
     }, [query]);
 
     return (
@@ -72,10 +80,10 @@ const SearchPage = () => {
                                 )
                             )
                         }
-                        {/* <LoadMoreDataBtn
+                        <LoadMoreDataBtn
                             state={blogs}
-                            fetchDataFun={}
-                        /> */}
+                            fetchDataFun={searchBlogs}
+                        />
                     </>
 
                 </InPageNavigation>

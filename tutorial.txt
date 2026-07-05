@@ -35,6 +35,91 @@ C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and
 #########################################################################
 #########################################################################
 
+In HomePage when a new category item is selected then `blogs` state is set
+to null earlier before run of useEffect in `loadBlogByCategory`. So when 
+useEffect runs after the state change fetchBlogsByCategory -> filterPaginationData
+then state is already `null` so it creates a new blogs. So appending Issue
+is not visible in case of HomePage with tags.
+
+However in SearchPage when a new query is searched there is no pageState like
+HomePage therefore old state still lives. Because In React, `setBlog(null)` is like 
+sending a letter. You put it in the mailbox, but the mail hasn't been delivered yet. 
+The actual `blogs` variable in your component function still holds the old value until 
+React re-renders the component.
+`setBlog(null)` in useEffect does set state to null, but only for FUTURE renders.
+The `searchBlogs` function that was created in the past still has the old `blogs` 
+value locked in its closure. 
+
+const searchBlogs = ({ page = 1, create_new_arr = false } = {}) => {
+    axios.post(...)
+    .then( async ({ data }) => {
+        let formatedData = await filterPaginationData({
+            state: blogs,   // <--- THIS blogs is captured RIGHT HERE
+            ...
+        })
+    })
+}
+
+// even if, it is changed like below it does not works.
+useEffect(() => {
+    setBlog(null)
+    setTimeout(() => {
+        console.log("This message appears after 3 seconds.");
+        searchBlogs({create_new_arr : false});
+    }, 3000);
+}, [query]);
+
+because, let's say you first searched "apple" and now search "banana":
+
+Time 0ms:  useEffect([query]) fires because query changed
+           → `blogs` currently = [apple results] (from previous search)
+           
+Time 0ms:  resetState() called → setBlog(null) is SCHEDULED
+           → but `blogs` variable STILL = [apple results] in this render
+
+Time 0ms:  setTimeout(() => { searchBlogs(...) }, 3000) is scheduled
+           → this setTimeout callback "remembers" the `searchBlogs` function
+           → which "remembers" `blogs` = [apple results] (closure!)
+
+Time ~1ms: React re-renders the component
+           → Now `blogs` = null (the setBlog(null) took effect)
+           → A NEW `searchBlogs` function is created
+           → This new function captures `blogs` = null
+           → BUT... the setTimeout still has the OLD `searchBlogs` function!
+
+Time 3000ms: setTimeout fires
+             → It runs the OLD `searchBlogs` function
+             → That old function has `blogs` = [apple results] in its closure
+             → So filterPaginationData gets state = [apple results]
+             → Since create_new_arr = false, it APPENDS instead of creating fresh
+
+
+In HomePage there is no such problem with tags because first blogs state is set to null
+then pageState is changed for the tag which re-renders and calls useEffect
+which already contains the updated pageState name and blogs state is also null after re-render
+so there is no append scenario.
+
+In searchPage rather than working with pageState we can create new array.
+
+
+Conclusion :
+Unlike variable even if a state value is changed but it will not be reflected
+until the component re-renders it self, it will have the same value in this closure. 
+Only the new re-rendered component will have the updated state value not the current one. 
+
+Example :
+    const [name, setName] = useState("A")
+
+        console.log(name) // prints A
+        setName("B")
+        console.log(name) // prints A
+
+
+
+#########################################################################
+#########################################################################
+#########################################################################
+
 const searchBlogs = ({ page = 1, create_new_arr = false }) => {
   ...
 }
