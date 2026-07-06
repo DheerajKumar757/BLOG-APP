@@ -8,6 +8,7 @@ import BlogPostCard from './BlogPostCard';
 import LoadMoreDataBtn from './LoadMoreDataBtn';
 import { filterPaginationData } from '../common/filter-pagination-data';
 import axios from 'axios';
+import UserCard from './UserCard';
 
 const SearchPage = () => {
     const { query } = useParams();
@@ -65,7 +66,14 @@ const SearchPage = () => {
                     ? <Loader />
                     : users.length
                         ? users.map((user, i) => {
-                            return <h1 key={i}>{ user.personal_info.fullname }</h1>;
+                            return (
+                                <AnimationWrapper
+                                    key={i}
+                                    transition={{ duration: 1, delay: i*0.08 }}
+                                >
+                                    <UserCard user={user} />
+                                </AnimationWrapper>
+                            )
                         })
                         : <NoDataMessage message='No user found'/>
                     
@@ -78,6 +86,7 @@ const SearchPage = () => {
         <section className='h-cover flex justify-center gap-10'>
 
             <div className='w-full'>
+
                 <InPageNavigation
                     routes={[`Search Results for "${query}"`, "Accounts Matched"]}
                     defaultHidden={"Accounts Matched"}
@@ -114,10 +123,19 @@ const SearchPage = () => {
                         />
                     </>
 
+                    {/* user card wrapper for mobile screen */}    
                     <UserCardWrapper />
 
                 </InPageNavigation>
 
+            </div>
+
+            <div className='min-w-[40%] lg:min-w-[350px] max-w-min border-l border-gray-300 pl-8 pt-3 max-md:hidden'>
+                <h2 className='flex font-medium text-xl mb-8 gap-2 items-center'>
+                    User related to search <i className='fi fi-rr-user'></i>
+                </h2>
+                {/* user card wrapper for desktop screen */}
+                <UserCardWrapper />
             </div>
 
         </section>
