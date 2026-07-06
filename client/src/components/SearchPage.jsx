@@ -12,7 +12,9 @@ import axios from 'axios';
 const SearchPage = () => {
     const { query } = useParams();
 
-    const [blogs, setBlog] = useState(null);
+    let [blogs, setBlog] = useState(null);
+    let [users, setUsers] = useState(null);
+    
 
     const searchBlogs = ({ page = 1, create_new_arr = false } = {}) => {
 
@@ -34,8 +36,16 @@ const SearchPage = () => {
 
     }
 
+    const fetchUsers = () => {
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-users", {query})
+        .then(({ data }) => {
+            setUsers(data.users);
+        })
+    }
+
     const resetState = () => {
         setBlog(null);
+        setUsers(null);
     }
 
     useEffect(() => {
@@ -44,7 +54,25 @@ const SearchPage = () => {
         // that is why `create_new_arr` is set to true so that a new array will be created
         // within `filterPaginationData`. 
         searchBlogs({create_new_arr : true});
+        fetchUsers();
     }, [query]);
+
+    const UserCardWrapper = () => {
+        return (
+            <>
+                {
+                    users == null
+                    ? <Loader />
+                    : users.length
+                        ? users.map((user, i) => {
+                            return <h1 key={i}>{ user.personal_info.fullname }</h1>;
+                        })
+                        : <NoDataMessage message='No user found'/>
+                    
+                }
+            </>
+        )
+    }
 
     return (
         <section className='h-cover flex justify-center gap-10'>
@@ -85,6 +113,8 @@ const SearchPage = () => {
                             fetchDataFun={searchBlogs}
                         />
                     </>
+
+                    <UserCardWrapper />
 
                 </InPageNavigation>
 
