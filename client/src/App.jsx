@@ -12,6 +12,7 @@ import Editor from './pages/Editor'
 import HomePage from './pages/HomePage'
 import SearchPage from './components/SearchPage'
 import PageNotFound from './pages/404-Page'
+import ProfilePage from './pages/ProfilePage'
 
 export const UserContext = createContext({});
 
@@ -37,6 +38,7 @@ const App = () => {
           <Route path = "/forget-password" element={<ForgetPassword />}/>
           <Route path = "/reset-password/:pass_username/:pass_param" element={<ResetPassword/>}/>
           <Route path = "search/:query" element={<SearchPage />}/>
+          <Route path = "user/:id" element={<ProfilePage />}/>
           <Route path = "*" element={<PageNotFound />} />
         </Route>
       </Routes>
