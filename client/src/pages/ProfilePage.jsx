@@ -9,6 +9,10 @@ import { useContext } from 'react';
 import { UserContext } from '../App';
 import AboutUser from '../components/AboutComponent';
 import { filterPaginationData } from '../common/filter-pagination-data';
+import InPageNavigation from '../components/InPageNavigation';
+import BlogPostCard from '../components/BlogPostCard';
+import NoDataMessage from '../components/NoDataMessage';
+import LoadMoreDataBtn from '../components/LoadMoreDataBtn';
 
 // this let's us destructure the data and use these keys
 // even if these values are not yet fetched from server.
@@ -131,6 +135,50 @@ const ProfilePage = () => {
 
                     </div>
 
+                    <div className='max-md:mt-12 w-full'>
+                        <InPageNavigation
+                            routes={["Blogs Published", "About"]}
+                            defaultHidden={["About"]}
+                        >
+
+                            <>
+                                {
+                                    blogs == null ? (
+                                        <Loader /> 
+                                    ) : (
+                                        blogs.results.length ? (
+                                            blogs.results.map((blog, i) => {
+                                                return (
+                                                    <AnimationWrapper
+                                                        transition={{
+                                                            duration: 1,
+                                                            delay:i*.1
+                                                        }} 
+                                                        keyValue={i}>
+                                                        <BlogPostCard
+                                                            content={blog}
+                                                            author={blog.author.personal_info}
+                                                        />
+                                                    </AnimationWrapper>
+                                                )
+                                            })
+                                        ) : (
+                                            <NoDataMessage message="No blogs available for this category" />
+                                        )
+                                    )
+                                }
+                                <LoadMoreDataBtn
+                                    state={blogs}
+                                    fetchDataFun={getBlogs}
+                                />
+                            </>
+
+                            <>
+                                <AboutUser className="" bio={bio} social_links={social_links} joinedAt={joinedAt}/>
+                            </>
+
+                        </InPageNavigation>
+                    </div>
                 </section>
             )
         }
