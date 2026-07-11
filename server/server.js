@@ -102,7 +102,8 @@ server.post("/blog-banner-url", upload.single('blog_banner'), (req, res) => {
   
   res.status(200).json({
     success: 1,
-    blogBannerUrl: `http://localhost:${PORT}/images/${req.file.filename}`
+    blogBannerUrl: `${process.env.SERVER_DOMAIN}/images/${req.file.filename}`
+
   });
 
 }, (error, req, res, next) => {

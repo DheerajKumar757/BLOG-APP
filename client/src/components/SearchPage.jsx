@@ -85,7 +85,7 @@ const SearchPage = () => {
     return (
         <section className='h-cover flex justify-center gap-10'>
 
-            <div className='w-full'>
+            <div className='w-full lg:max-w-225'>
 
                 <InPageNavigation
                     routes={[`Search Results for "${query}"`, "Accounts Matched"]}

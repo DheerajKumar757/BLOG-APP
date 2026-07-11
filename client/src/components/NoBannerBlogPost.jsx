@@ -17,7 +17,7 @@ const MinimalBlogPost = ({ blog, index }) => {
                     <p className='min-w-fit'>{ getDay(publishedAt) }</p>
                 </div>
 
-                <h2 className='blog-title'>{title}</h2>
+                <h3 className='blog-title font-bold'>{title}</h3>
             </div>
         </Link>
     )

@@ -120,7 +120,7 @@ const ProfilePage = () => {
             <Loader />
             : (
                 profile_username.length ? (
-                    <section className='h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12'>
+                    <section className='h-cover md:flex flex-row-reverse items-start justify-center gap-5 min-[1100px]:gap-12 max-md:px-4 max-w-[1800px] mx-auto'>
                         <div className='flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border-l border-gray-200 md:sticky md:top-[100px] md:py-10'>
 
                             <img src={profile_img} className='w-48 h-48 bg-gray-200 rounded-full md:w-32 md:h-32'/>

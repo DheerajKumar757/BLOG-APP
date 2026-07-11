@@ -23,11 +23,12 @@ const HomePage = () => {
         "gaming",
         "sports",
         "entertainment",
-        "politics",
-        "science",
-        "health",
-        "travel", 
-        "food"
+        "backend",
+        "react",
+        "tech",
+        "node", 
+        "test",
+        "frontend"
     ];
 
     const fetchLatestBlogs = ({page = 1}) => {

@@ -15,7 +15,7 @@ const BlogPostCard = ({ content, author }) => {
             <p className='min-w-fit'>{ getDay(publishedAt) }</p>
           </div>
 
-          <h2 className='blog-title'>{title}</h2>
+          <h3 className='blog-title font-bold'>{title}</h3>
 
           <p className='my-3 text-xl font-gelasio leading-7 max-sm:hidden md:max-[1100px]:hidden line-clamp-2'>{des}</p>
 
