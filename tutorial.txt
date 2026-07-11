@@ -35,6 +35,23 @@ C28 -> Basic sign-up/sign-in and logout functions are complete with frontend and
 #########################################################################
 #########################################################################
 
+Let a user X is logged in and visits the profile of user Y we know that data
+of user Y will be reflected in the page. Now if the X visits its profile using
+profile button blogs will not be update it will be of X only.
+
+Now let us think in detail how to fix it?
+When X loads the profile page of Y, `profileId` of Y is instantly set using params and
+then after some hop `profileLoaded` will also be set to the same user.
+but note that since `profileLoaded` is a state variable its value will not 
+be reflected untill the next render happens.
+Now if X goes to its own profile then profile of X is set and useEffect is called,
+it sees the profile does not match it sets the blogs to null and renders with useEffect.
+when useEffect calls it sees blogs as null so it again fetches the data and renders.
+
+#########################################################################
+#########################################################################
+#########################################################################
+
 In HomePage when a new category item is selected then `blogs` state is set
 to null earlier before run of useEffect in `loadBlogByCategory`. So when 
 useEffect runs after the state change fetchBlogsByCategory -> filterPaginationData

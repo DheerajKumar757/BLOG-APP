@@ -38,6 +38,7 @@ const ProfilePage = () => {
     let [ profile, setProfile ] = useState(profileDataStructure);
     let [ loading, setLoading ] = useState(true);
     let [ blogs, setBlogs ] = useState(null);
+    let [ profileLoaded, setProfileLoaded ] = useState("");
 
     // without profileDataStructure we can not destructure below.
     // for destructuring key value pair should be available.
@@ -55,6 +56,7 @@ const ProfilePage = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", { username: profileId})
         .then(({ data: user }) => {
             setProfile(user)
+            setProfileLoaded(profileId);
             getBlogs({ user_id: user._id })
             setLoading(false);
         })
@@ -92,12 +94,21 @@ const ProfilePage = () => {
     const resetStates = () => {
         setProfile(profileDataStructure);
         setLoading(true);
+        setProfileLoaded("");
     }
 
     useEffect(() => {
-        resetStates();
-        fetchUserProfile()
-    }, [profileId])
+        // console.log("p1=" + profileId+ " pl1="+ profileLoaded)
+        if(profileId != profileLoaded) {
+            setBlogs(null)
+        }
+
+        if(blogs == null) {
+            resetStates();
+            fetchUserProfile()
+        }
+        // console.log("p2=" + profileId+ " pl2="+ profileLoaded)
+    }, [profileId, blogs])
 
   return (
     <AnimationWrapper>
@@ -106,7 +117,7 @@ const ProfilePage = () => {
             <Loader />
             : (
                 <section className='h-cover md:flex flex-row-reverse items-start gap-5 min-[1100px]:gap-12'>
-                    <div className='flex flex-col max-md:items-center gap-5 min-w-[250px]'>
+                    <div className='flex flex-col max-md:items-center gap-5 min-w-[250px] md:w-[50%] md:pl-8 md:border-l border-gray-200 md:sticky md:top-[100px] md:py-10'>
 
                         <img src={profile_img} className='w-48 h-48 bg-gray-200 rounded-full md:w-32 md:h-32'/>
 
