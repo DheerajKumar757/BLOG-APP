@@ -520,8 +520,7 @@ server.get("/trending-blogs", (req, res) => {
 })
 
 server.post("/search-blogs", (req, res) => {
-    let { tag, query, page } = req.body;
-    console.log("tag=" + tag + " page=" + page + " query=" + query);
+    let { tag, query, author, page } = req.body;
 
     let findQuery = {};
 
@@ -532,6 +531,9 @@ server.post("/search-blogs", (req, res) => {
     else if(query) {
         // case-insensitive search for title
         findQuery = { draft: false, title: new RegExp(query, 'i') }; 
+    }
+    else if(author) {
+        findQuery = { author, draft: false }; 
     }
 
 
@@ -554,7 +556,7 @@ server.post("/search-blogs", (req, res) => {
 })
 
 server.post('/search-blogs-count', (req, res) => {
-    let { tag, query } = req.body;
+    let { tag, author, query } = req.body;
 
     let findQuery = {};
     if(tag) {
@@ -564,6 +566,9 @@ server.post('/search-blogs-count', (req, res) => {
     else if(query) {
         // counts total documents using title
         findQuery = { draft: false, title: new RegExp(query, 'i') };
+    }
+    else if(author) {
+        findQuery = { author, draft: false }; 
     }
 
 

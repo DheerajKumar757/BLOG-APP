@@ -8,6 +8,7 @@ import Loader from '../components/Loader';
 import { useContext } from 'react';
 import { UserContext } from '../App';
 import AboutUser from '../components/AboutComponent';
+import { filterPaginationData } from '../common/filter-pagination-data';
 
 // this let's us destructure the data and use these keys
 // even if these values are not yet fetched from server.
@@ -32,6 +33,7 @@ const ProfilePage = () => {
 
     let [ profile, setProfile ] = useState(profileDataStructure);
     let [ loading, setLoading ] = useState(true);
+    let [ blogs, setBlogs ] = useState(null);
 
     // without profileDataStructure we can not destructure below.
     // for destructuring key value pair should be available.
@@ -49,12 +51,38 @@ const ProfilePage = () => {
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/get-profile", { username: profileId})
         .then(({ data: user }) => {
             setProfile(user)
+            getBlogs({ user_id: user._id })
             setLoading(false);
         })
         .catch(err => {
             console.log(err);
             setLoading(false);
         })
+    }
+
+    const getBlogs = ({ page = 1, user_id}) => {
+
+        // user_id key is added below in blogs state.
+        user_id = user_id == undefined ? blogs.user_id : user_id;
+
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + "/search-blogs", {
+            author: user_id,
+            page
+        })
+        .then(async ({ data }) => {
+            let formatedData = await filterPaginationData({
+                state: blogs,
+                data: data.blogs,
+                page,
+                countRoute: "/search-blogs-count",
+                data_to_send: { author : user_id }
+            })
+
+            // add one another key and set it to blogs state
+            formatedData.user_id = user_id;
+            setBlogs(formatedData)
+        })
+
     }
 
     const resetStates = () => {
